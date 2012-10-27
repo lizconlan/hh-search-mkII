@@ -1,6 +1,4 @@
 class Person < ActiveRecord::Base
-  has_many :commons_memberships
-  has_many :lords_memberships
   
   def name
     if / of$/.match(honorific)
