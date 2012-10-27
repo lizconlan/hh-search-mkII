@@ -4,18 +4,18 @@ require 'rest-client'
 require 'json'
 require 'haml'
 
-require 'active_record'
-require './models/person'
+#require 'active_record'
+#require './models/person'
 require './models/search_result'
-require './models/hansard_reference'
+#require './models/hansard_reference'
 
 before do
   WEBSOLR_URL = "http://127.0.0.1:8983/solr"
   
-  dbconfig = YAML::load(File.open 'config/database.yml')[ Sinatra::Application.environment.to_s ]
-  ActiveRecord::Base.establish_connection(dbconfig)
+  #dbconfig = YAML::load(File.open 'config/database.yml')[ Sinatra::Application.environment.to_s ]
+  #ActiveRecord::Base.establish_connection(dbconfig)
   
-  PARENT_URL = "http://hansard.millbanksystems.com/"
+  PARENT_URL = "http://hansard.millbanksystems.com"
 end
 
 post "/" do
@@ -31,11 +31,11 @@ end
 def do_search
   query = params[:query]
   if query
-    reference = HansardReference.create_from(query)
+    #reference = HansardReference.create_from(query)
     
     
     @page_title = "Search: #{query}"
-    url = WEBSOLR_URL + "/select/?q=solr_text_texts:#{CGI::escape(query)}&facet=true&facet.field=decade_is&facet.field=year_is&facet.field=sitting_type_ss&facet.field=speaker_url_ss&wt=json&hl.fragsize=150&hl=true&hl.fl=solr_text_texts&facet.zeros=false"
+    url = WEBSOLR_URL + "/select/?q=solr_text_texts:#{CGI::escape(query)}&facet=true&facet.field=decade_is&facet.field=year_is&facet.field=sitting_type_ss&facet.field=speaker_uid_ss&wt=json&hl.fragsize=150&hl=true&hl.fl=solr_text_texts&facet.zeros=false"
     #&sort=date_ds+desc
     #&fq=speaker_name_ss:%22Mr%20Isaac%20Corry%22
     #&facet.query=decade_is:1800
@@ -45,14 +45,9 @@ def do_search
   
     html = []
   
-    speaker_data = result["facet_counts"]["facet_fields"]["speaker_url_ss"]
+    speaker_data = result["facet_counts"]["facet_fields"]["speaker_uid_ss"]
     if speaker_data.is_a?(Array)
-      speakers = facets_to_hash(speaker_data)
-      speaker_list = []
-      speakers.each do |name, count|
-        speaker_list << "#{format_name(name)} (#{count})"
-      end
-      @speaker_contributions = speaker_list.join(" ")
+      @speaker_facets = facets_to_hash(speaker_data)
     end
   
     @found = result["response"]["numFound"]
@@ -60,7 +55,7 @@ def do_search
   
     result["response"]["docs"].each do |search_result|
       id = search_result["id"]
-      @search_results << SearchResult.new(search_result["subject_ss"], search_result["url_ss"], search_result["speaker_name_ss"], search_result["speaker_url_ss"], search_result["sitting_type_ss"], search_result["date_ds"], result["highlighting"][id]["solr_text_texts"].join(" "))
+      @search_results << SearchResult.new(search_result["subject_ss"], search_result["url_ss"], search_result["speaker_uid_ss"], search_result["sitting_type_ss"], search_result["date_ds"], result["highlighting"][id]["solr_text_texts"].join(" "))
     end
   end
 end
@@ -81,8 +76,8 @@ def facets_to_hash(facet_array)
   output.sort_by{ |name, count| count }.reverse
 end
 
-def format_name(url)
-  slug = url.split("/").pop
-  person = Person.find_by_slug(slug)
-  person.name
+def format_name(uid)
+  parts = uid.split("|")
+  
+  name = parts[1]
 end

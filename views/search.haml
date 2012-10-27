@@ -1,4 +1,11 @@
 - if @search_results
+  - if @speaker_facets
+    %ol#by-member-facet
+      Show only contributions by:
+      - @speaker_facets.each do |uid, facet_count|
+        %li
+          - slug, name = uid.split("|")
+          %a{:href => "#{PARENT_URL}#{slug}"}= "#{name} (#{facet_count})"
   %div#search-results
     - @search_results.each do |result_line|
       =haml(:"_result", :locals => {:result => result_line}, :layout => false)
