@@ -1,0 +1,51 @@
+a{text-decoration:none;}
+body{font-family:"Lucida Grande", Verdana, Arial, Helvetica, sans-serif;line-height:140%;}
+blockquote{margin:1em 0;}
+span.time *{display:inline;float:right;clear:both;padding-top:1em;padding-left:1em;}
+.permalink{float:right;font-style:normal;clear:both;padding-left:1em;}
+.page-preview{float:right;clear:both;padding-left:1em;}
+.search-help{float:right;padding-left:0.5em;font-size:85%;}
+.first-para{display:inline;}
+.procedural{padding-left:2em;}
+h1{font-size:112%;}
+h2{line-height:100%;font-size:108%;}
+h3{line-height:100%;font-size:106%;}
+table.timeline{text-align:center;margin:0 auto;width:90%;}
+table.source-files{margin:0 auto;width:90%;}
+table.timeline tbody{height:100px;}
+.timeline-header-row, .timeline-summary-row, .timeline-caption-row{height:20px;}
+.timeline-navigation-row{height:40px;}
+.missing-data{font-weight:bold;color:red;}
+#header{width:47.5em;margin:auto;}
+#nav{font-size:85%;}
+#content{width:47.5em;margin:auto;}
+#footer{width:47.5em;margin:auto;}
+#search{float:right;margin-left:0.5em;}
+ol{list-style:none;}
+ul.jumplist{list-style:none;}
+.blank-section *{color:black;}
+.next-sitting-day{float:right;width:50%;}
+img{border:0;}
+.search-result-fragment{padding-bottom:1em;}
+.search-result blockquote{margin:0;}
+.search-result h4{font-style:normal;font-weight:normal;margin:0;display:inline;margin-right:0.2em;}
+.search-result-fragment em{font-style:normal;background-color:yellow;}
+.search-result .date{display:inline;color:green;font-size:85%;}
+.search-result cite{}
+.section-word-length,.section_division_count,.sitting-volume{color:#999;}
+.section-column-reference{color:#999;float:right;clear:both;display:inline;}
+#by-member-facet li{display:inline;list-style-type:none;padding-right:0.25em;}
+#by-sitting-type-facet li{display:inline;list-style-type:none;padding-right:0.25em;}
+#by-member-facet, #by-sitting-type-facet {padding-left:0;}
+#sort-links{float:right;}
+.empty-message{display:none;}
+#search-help-container{margin:2% 4%;font-size:85%;line-height:normal;}
+code{font-size:1.4em;}
+.division{font-size:0.8em;line-height:120%;}
+cite {font-style:normal;font-weight:bold;}
+cite.section{font-weight:normal;}
+.column-number{width:60px;text-align:right;}
+th{font-weight:normal;font-variant:small-caps;text-align:left;}
+table.volumes td{width:15%;}
+.print-only{display:none;}
+.pagination .disabled{display:none;}

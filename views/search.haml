@@ -1,0 +1,4 @@
+- if @search_results
+  %div#search-results
+    - @search_results.each do |result_line|
+      =haml(:"_result", :locals => {:result => result_line}, :layout => false)
