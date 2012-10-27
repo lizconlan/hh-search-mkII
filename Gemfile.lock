@@ -1,0 +1,69 @@
+GEM
+  specs:
+    activemodel (3.0.6)
+      activesupport (= 3.0.6)
+      builder (~> 2.1.2)
+      i18n (~> 0.5.0)
+    activerecord (3.0.6)
+      activemodel (= 3.0.6)
+      activesupport (= 3.0.6)
+      arel (~> 2.0.2)
+      tzinfo (~> 0.3.23)
+    activesupport (3.0.6)
+    arel (2.0.9)
+    builder (2.1.2)
+    escape (0.0.4)
+    haml (3.1.4)
+    hike (1.2.1)
+    hpricot (0.8.6)
+    htmlentities (4.2.4)
+    i18n (0.5.0)
+    json (1.5.4)
+    mime-types (1.18)
+    multi_json (1.3.2)
+    mysql (2.8.1)
+    nokogiri (1.4.7)
+    pr_geohash (1.0.0)
+    rack (1.4.1)
+    rack-protection (1.2.0)
+      rack
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+    rsolr (0.12.1)
+      builder (>= 2.1.2)
+    sanitize (2.0.3)
+      nokogiri (< 1.6, >= 1.4.4)
+    shotgun (0.9)
+      rack (>= 1.0)
+    sinatra (1.3.2)
+      rack (>= 1.3.6, ~> 1.3)
+      rack-protection (~> 1.2)
+      tilt (>= 1.3.3, ~> 1.3)
+    sprockets (2.8.0)
+      hike (~> 1.2)
+      multi_json (~> 1.0)
+      rack (~> 1.0)
+      tilt (!= 1.3.0, ~> 1.1)
+    sunspot (1.2.1)
+      escape (= 0.0.4)
+      pr_geohash (~> 1.0)
+      rsolr (= 0.12.1)
+    tilt (1.3.3)
+    tzinfo (0.3.26)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activerecord
+  haml (= 3.1.4)
+  hpricot
+  htmlentities
+  json (= 1.5.4)
+  mysql
+  rest-client (= 1.6.7)
+  sanitize
+  shotgun
+  sinatra
+  sprockets
+  sunspot (~> 1.2.1)
