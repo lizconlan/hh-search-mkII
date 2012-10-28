@@ -1,0 +1,46 @@
+%span{:class => "#{@page < 2 ? "disabled " : ""}prev_page"}
+  %a{:href => "?page=#{@page-1}"}= "&laquo; Previous"
+- if @page == 1
+  %span.current 1
+- else
+  %a{:href => "?page=1"} 1
+- if @page == 2
+  %span.current 2
+- else
+  %a{:href => "?page=2"} 2
+- if @page < 9
+  - if @last_page < 11
+    - last = @last_page - 2
+  - else
+    - last = 9
+  - (3..last).to_a.each do |i|
+    - if i <= @last_page
+      - if @page == i
+        %span.current= i
+      - else
+        %a{:href => "?page=#{i}"}= i
+  - if @last_page > 9
+    - if @last_page > 11
+      ="..."
+    %a{:href => "?page=#{@last_page-1}"}= @last_page-1
+    %a{:href => "?page=#{@last_page}"}= @last_page
+- else
+  ="..."
+  - if @page < @last_page - 7
+    - (@page-4..@page+4).to_a.each do |i|
+      - if i <= @last_page
+        - if @page == i
+          %span.current= i
+        - else
+          %a{:href => "?page=#{i}"}= i
+    ="..."
+    %a{:href => "?page=#{@last_page-1}"}= @last_page-1
+    %a{:href => "?page=#{@last_page}"}= @last_page
+  - else
+    - (@last_page-8..@last_page).to_a.each do |i|
+      - if @page == i
+        %span.current= i
+      - else
+        %a{:href => "?page=#{i}"}= i
+%span{:class => "#{@page >= @last_page ? "disabled ": ""}next_page"}
+  %a{:href => "?page=#{@page+1}"}= "Next &raquo;"
