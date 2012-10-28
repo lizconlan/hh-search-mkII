@@ -21,7 +21,6 @@ end
 post "/" do
   query = params[:query]
   redirect "/#{query}"
-  haml(:"search")
 end
 
 get "/:query" do
