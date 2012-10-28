@@ -1,5 +1,5 @@
 - if @search_results
-  - if @speaker_facets
+  - unless @speaker_facets.empty?
     %ol#by-member-facet
       Show only contributions by:
       - @speaker_facets.each do |uid, facet_count|
@@ -7,14 +7,21 @@
           - slug, name = uid.split("|")
           %a{:href => "#{PARENT_URL}#{slug}"}= "#{name} (#{facet_count})"
   %div#search-results
-    %div#sort-links
-      Sort by MOST RECENT
-      |
-      Sort by EARLIEST
-      |
-      Sort by MOST RELEVANT
+    - if @results_found > 1
+      %div#sort-links
+        Sort by MOST RECENT
+        |
+        Sort by EARLIEST
+        |
+        Sort by MOST RELEVANT
     %h3#results-header
-      = "Results #{@results_start} to #{@results_end} of #{@results_found}"
+      - if @results_found < 11
+        - if @results_found == 1
+          1 result
+        - else
+          = "#{@results_end} results"
+      - else
+        = "Results #{@results_start} to #{@results_end} of #{@results_found}"
     - @search_results.each do |result_line|
       =haml(:"_result", :locals => {:result => result_line}, :layout => false)
   -if @last_page > 1
