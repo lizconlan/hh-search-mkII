@@ -2,7 +2,7 @@
   - unless @speaker_facets.empty?
     %ol#by-member-facet
       Show only contributions by:
-      - @speaker_facets.each do |uid, facet_count|
+      - @speaker_facets[0..4].each do |uid, facet_count|
         %li
           - slug, name = uid.split("|")
           %a{:href => "#{PARENT_URL}#{slug}"}= "#{name} (#{facet_count})"
