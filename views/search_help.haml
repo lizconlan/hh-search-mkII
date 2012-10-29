@@ -1,0 +1,152 @@
+%h3 How we present search results
+
+%p By default, search results are presented in order of relevance: that is, an order decided by the search engine based on comparisons of similarity and frequency of the term appearing within the text contributions.
+
+%p You can change the sort order by using the links to the top right of the search results: 'Most recent first' sorts the list of results to show the most recently dated contributions first and 'Earliest first' sorts to show the oldest dated contributions first.
+
+%p
+  The search engine will recognise certain sorts of queries and offer links based on them: for example -
+  %code Andrew Rosindell
+  will bring up a link to that MP
+  
+%h3 How you can use the search function on this site
+
+%p
+  By default our search engine gives results that are somewhat fuzzy: a search for
+  %code nation
+  will give results that also include the word
+  %code nationalism
+  or the word
+  =succeed '.' do
+    %code nationally
+  You can
+  %strong<
+    make the search more fuzzy
+  by using the
+  %code= "~"
+  sign: for example -
+  %code sat~
+  will give results that include the word
+  =succeed ',' do
+    %code rat
+  %code oats
+  and
+  =succeed '.' do
+    %code cat
+  
+%p
+  All searches are
+  =succeed '.' do
+    %strong<
+      case-insensitive
+  A search for
+  %code LONDON
+  returns the same results as a search for
+  =succeed '.' do
+    %code london
+  
+%p
+  If you search for two or more words, the search engine will assume you want all of the words to be present in the results. For example, if you search for
+  %code NATO Spain
+  the search engine will search for text containing both words,
+  %code NATO
+  and
+  =succeed '.' do
+    %code Spain
+  
+%p
+  If you want to
+  =succeed ',' do
+    %strong<
+      search for either word
+  you can use the word
+  %code OR
+  in the search text box to join the words together: for example
+  =succeed '.' do
+    %code
+      NATO OR Spain
+  This will search for text containing either the word
+  %code NATO
+  or the word
+  =succeed '.' do
+    %code Spain
+  
+%p
+  You can
+  %strong<
+    exclude a term
+  from your search using the
+  %code= "-"
+  sign: for example:
+  %code London -Greater
+  will search for text containing the word
+  %code london
+  which does not contain the word
+  =succeed "." do
+    %code
+      greater
+  
+%p
+  If you want to
+  =succeed "," do
+    %strong<
+      search for a phrase
+  you can use the
+  %code= "+"
+  sign in the search text box to join the words together: for example
+  =succeed "." do
+    %code peace+treaty
+  This will search for text containing the word
+  =succeed "," do
+    %code peace
+  followed afterwards by the word
+  =succeed "." do
+    %code treaty
+  
+%p
+  You can search for a word marking a 
+  %strong<
+    single missing letter
+  with a
+  =succeed ":" do
+    %code ?
+  for example -
+  %code l?nch
+  will give results that include the word
+  =succeed "," do
+    %code lunch
+  %code lynch
+  or
+  =succeed "." do
+    %code linch
+    
+%p
+  %strong<
+    Multiple missing letters
+  can be marked with a
+  =succeed ":" do
+    %code *
+  for example -
+  %code dev*nt
+  will give results that include the word
+  =succeed "," do
+    %code devrient
+  %code development%p
+  or
+  =succeed "." do
+    %code deviant
+  
+%p
+  The search engine can recognise a standard
+  =succeed "," do
+    %strong<
+      Hansard reference
+  such as:
+  %code HC Deb 19 July 1982 vol 28 cc58-9W
+  and will take you straight to where the reference points to, if we have the data.
+  
+%h3 Faceted search
+
+%p Where available, a link to "Filter results by speaker or house" will be shown. Using the links provided, you can build a search query as you go: you can add or remove 'facets' - and the search results will be updated to take account of them. You can also bookmark a faceted search result set.
+
+%p Faceted search allows complex queries to be built up without requiring complex search forms. Facets that lead to empty result sets are not shown.

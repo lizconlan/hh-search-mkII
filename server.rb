@@ -18,6 +18,10 @@ before do
   PARENT_URL = "http://hansard.millbanksystems.com"
 end
 
+get "/" do
+  haml(:"search_help")
+end
+
 post "/" do
   query = params[:query]
   redirect "/#{query}"
