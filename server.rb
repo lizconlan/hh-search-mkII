@@ -43,7 +43,7 @@ def do_search
     #reference = HansardReference.create_from(query)
     
     @page_title = "Search: #{query}"
-    url = WEBSOLR_URL + "/select/?q=solr_text_texts:#{CGI::escape(query)}&start=#{@results_start-1}&facet=true&facet.field=decade_is&facet.field=year_is&facet.field=sitting_type_ss&facet.field=speaker_uid_ss&wt=json&hl.fragsize=150&hl=true&hl.fl=solr_text_texts&facet.zeros=false"
+    url = WEBSOLR_URL + "/select/?q=text_texts:#{CGI::escape(query)}&start=#{@results_start-1}&facet=true&facet.field=decade_is&facet.field=year_is&facet.field=sitting_type_ss&facet.field=speaker_uid_ss&wt=json&hl.fragsize=150&hl=true&hl.fl=text_texts&facet.zeros=false"
     #&sort=date_ds+desc
     #&fq=speaker_name_ss:%22Mr%20Isaac%20Corry%22
     #&facet.query=decade_is:1800
@@ -65,7 +65,7 @@ def do_search
     
     result["response"]["docs"].each do |search_result|
       id = search_result["id"]
-      @search_results << SearchResult.new(search_result["subject_ss"], search_result["url_ss"], search_result["speaker_uid_ss"], search_result["sitting_type_ss"], search_result["date_ds"], result["highlighting"][id]["solr_text_texts"].join(" "))
+      @search_results << SearchResult.new(search_result["subject_ss"], search_result["url_ss"], search_result["speaker_uid_ss"], search_result["sitting_type_ss"], search_result["date_ds"], result["highlighting"][id]["text_texts"].join(" "))
     end
   end
 end
