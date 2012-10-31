@@ -1,15 +1,15 @@
-- if @search_results
+- if @search.search_results
   - unless @filters.empty?
     =haml(:"_filters")
-  - unless @speaker_facets.empty? or @filters.join("|").include?("|speaker")
+  - unless @search.speaker_facets.empty? or @filters.join("|").include?("|speaker")
     %ol#by-member-facet
       Show only contributions by:
-      - @speaker_facets[0..4].each do |uid, facet_count|
+      - @search.speaker_facets[0..4].each do |uid, facet_count|
         %li
           - slug, name = uid.split("|")
           %a{:href => "#{querystring_builder({"speaker"=>slug})}"}= "#{name} (#{facet_count})"
   %div#search-results
-    - if @results_found > 1
+    - if @search.results_found > 1
       %div#sort-links
         Sort by MOST RECENT
         |
@@ -17,16 +17,16 @@
         |
         Sort by MOST RELEVANT
     %h3#results-header
-      - if @results_found < 11
-        - if @results_found == 1
+      - if @search.results_found < 11
+        - if @search.results_found == 1
           1 result
         - else
-          = "#{@results_end} results"
+          = "#{@search.results_end} results"
       - else
-        = "Results #{@results_start} to #{@results_end} of #{@results_found}"
-    - @search_results.each do |result_line|
+        = "Results #{@search.results_start} to #{@search.results_end} of #{@search.results_found}"
+    - @search.search_results.each do |result_line|
       =haml(:"_result", :locals => {:result => result_line}, :layout => false)
-  -if @last_page > 1
+  -if @search.last_page > 1
     %div.pagination
       %div.pagination
         =haml(:"_pagination")

@@ -91,12 +91,7 @@ get "/:query" do
   haml(:"search")
 end
 
-def do_search
-  page = params[:page]
-  @page = page ? page.to_i : 1
-  @page = 1 if @page < 1
-  @results_start = (@page-1)*10+1
-  
+def do_search  
   query = params[:query]
   if query
     #reference = HansardReference.create_from(query)
@@ -104,21 +99,15 @@ def do_search
     @page_title = "Search: #{query}"
     
     @search = Search.new()
-    
     options = {}
     options[:type] = params[:type] if params[:type]
     options[:speaker] = params[:speaker] if params[:speaker]
     
-    @search.search(query, @results_start, options)
-    @search_results = @search.search_results
-    @speaker_facets = @search.speaker_facets
-    @results_found = @search.results_found
-    @results_end = @search.results_end
-    @last_page = @search.last_page
+    @search.search(query, params[:page], options)
     
     @filters = []
     if params[:speaker]
-      @speaker_facets[0..5].each do |uuid|
+      @search.speaker_facets[0..5].each do |uuid|
         slug,speaker = uuid.first.split("|")
         if slug == params[:speaker]
           @filters << [speaker, "speaker"]

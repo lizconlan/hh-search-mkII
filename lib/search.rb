@@ -2,10 +2,13 @@ require 'rest-client'
 require 'json'
 
 class Search
-  attr_reader :search_results, :speaker_facets, :results_found, :results_end, :results_start, :last_page
+  attr_reader :search_results, :speaker_facets, :results_found, :results_end, :results_start, :last_page, :page
   
-  def search(query, results_start, options={})
-    @results_start = results_start
+  def search(query, page, options={})
+    @page = page ? page.to_i : 1
+    @page = 1 if @page < 1
+    @results_start = (@page-1)*10+1
+    
     url = WEBSOLR_URL + "/select/?q=text_texts:#{CGI::escape(query)}&start=#{results_start-1}&facet=true&facet.field=decade_is&facet.field=year_is&facet.field=sitting_type_ss&facet.field=speaker_uid_ss&wt=json&hl.fragsize=200&hl=true&hl.fl=text_texts&facet.zeros=false"
     #&sort=date_ds+desc
     unless options.empty?
