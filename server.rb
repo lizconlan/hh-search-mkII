@@ -147,6 +147,5 @@ end
 
 def format_name(uid)
   parts = uid.split("|")
-  
   name = parts[1]
 end
