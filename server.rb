@@ -13,7 +13,7 @@ PARENT_URL = "http://hansard.millbanksystems.com"
 helpers do
   def querystring_builder(option={})
     remove = ""
-    page = params[:page].to_i
+    page = params[:page]
     sort = params[:sort]
     speaker = params[:speaker]
     type = params[:type]
@@ -36,6 +36,7 @@ helpers do
       eval "#{name.to_s} = '#{value}'"
       page = 0 unless name.to_s == "page"
     end
+    page = page.to_i
     
     if page and page > 1
       qs << "page=#{page}"
