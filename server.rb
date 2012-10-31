@@ -106,8 +106,8 @@ def do_search
     @search = Search.new()
     
     options = {}
-    options[:type] => params[:type] if params[:type]
-    options[:speaker] => params[:speaker] if params[:speaker]
+    options[:type] = params[:type] if params[:type]
+    options[:speaker] = params[:speaker] if params[:speaker]
     
     @search.search(query, @results_start, options)
     @search_results = @search.search_results
