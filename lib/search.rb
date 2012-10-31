@@ -10,8 +10,12 @@ class Search
     @results_start = (@page-1)*10+1
     
     url = WEBSOLR_URL + "/select/?q=text_texts:#{CGI::escape(query)}&start=#{results_start-1}&facet=true&facet.field=decade_is&facet.field=year_is&facet.field=sitting_type_ss&facet.field=speaker_uid_ss&wt=json&hl.fragsize=200&hl=true&hl.fl=text_texts&facet.zeros=false"
-    #&sort=date_ds+desc
     unless options.empty?
+      if options[:sort]
+        url = "#{url}&sort=date_ds+asc" if options[:sort] == "date"
+        url = "#{url}&sort=date_ds+desc" if options[:sort] == "reverse_date"
+      end
+      
       if options[:speaker]
         url = "#{url}&fq=speaker_url_ss:#{options[:speaker]}"
       end
@@ -19,7 +23,6 @@ class Search
         url = "#{url}&fq=sitting_type_ss:#{CGI::escape(options[:type])}"
       end
     end
-    #&facet.query=decade_is:1800
 
     response = RestClient.get(url)
     result = JSON.parse(response)

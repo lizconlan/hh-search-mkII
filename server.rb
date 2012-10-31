@@ -102,6 +102,7 @@ def do_search
     options = {}
     options[:type] = params[:type] if params[:type]
     options[:speaker] = params[:speaker] if params[:speaker]
+    options[:sort] = params[:sort] if params[:sort]
     
     @search.search(query, params[:page], options)
     

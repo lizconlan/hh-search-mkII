@@ -11,11 +11,20 @@
   %div#search-results
     - if @search.results_found > 1
       %div#sort-links
-        Sort by MOST RECENT
+        - if params[:sort] == "reverse_date"
+          Sort by MOST RECENT
+        - else
+          %a{:href=>"#{querystring_builder({"sort"=>"reverse_date"})}"} Sort by MOST RECENT
         |
-        Sort by EARLIEST
+        - if params[:sort] == "date"
+          Sort by EARLIEST
+        - else
+          %a{:href=>"#{querystring_builder({"sort"=>"date"})}"} Sort by EARLIEST
         |
-        Sort by MOST RELEVANT
+        - unless params[:sort]
+          Sort by MOST RELEVANT
+        - else
+          %a{:href=>"#{querystring_builder({"sort"=>nil})}"} Sort by MOST RELEVANT
     %h3#results-header
       - if @search.results_found < 11
         - if @search.results_found == 1
