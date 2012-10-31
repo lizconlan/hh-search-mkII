@@ -12,8 +12,10 @@ class Search
       if options[:speaker]
         url = "#{url}&fq=speaker_url_ss:#{options[:speaker]}"
       end
+      if options[:type]
+        url = "#{url}&fq=sitting_type_ss:#{CGI::escape(options[:type])}"
+      end
     end
-    #&fq=speaker_name_ss:%22Mr%20Isaac%20Corry%22
     #&facet.query=decade_is:1800
 
     response = RestClient.get(url)
