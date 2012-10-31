@@ -1,10 +1,8 @@
 require 'sinatra'
 require 'sunspot'
-require 'rest-client'
-require 'json'
 require 'haml'
 require 'active_record'
-require 'action_view'
+#require 'action_view'
 
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
 PARENT_URL = "http://hansard.millbanksystems.com"
@@ -72,6 +70,8 @@ end
 require './models/search_result'
 #require './models/hansard_reference'
 
+require './lib/search'
+
 before do
   #dbconfig = YAML::load(File.open 'config/database.yml')[ Sinatra::Application.environment.to_s ]
   #ActiveRecord::Base.establish_connection(dbconfig)
@@ -102,35 +102,14 @@ def do_search
     #reference = HansardReference.create_from(query)
     
     @page_title = "Search: #{query}"
-    url = WEBSOLR_URL + "/select/?q=text_texts:#{CGI::escape(query)}&start=#{@results_start-1}&facet=true&facet.field=decade_is&facet.field=year_is&facet.field=sitting_type_ss&facet.field=speaker_uid_ss&wt=json&hl.fragsize=200&hl=true&hl.fl=text_texts&facet.zeros=false"
-    #&sort=date_ds+desc
-    #&fq=speaker_name_ss:%22Mr%20Isaac%20Corry%22
-    #&facet.query=decade_is:1800
-  
-    response = RestClient.get(url)
-    result = JSON.parse(response)
-  
-    @search_results = []
-  
-    speaker_data = result["facet_counts"]["facet_fields"]["speaker_uid_ss"]
-    if speaker_data.is_a?(Array)
-      @speaker_facets = facets_to_hash(speaker_data)
-    end
-  
-    @results_found = result["response"]["numFound"]
-    @results_end = @results_start + 9
-    @results_end = @results_found if @results_end > @results_found
-    @last_page = (@results_found / 10.0).ceil
-    speakers = {}
     
-    result["response"]["docs"].each do |search_result|
-      id = search_result["id"]
-      if search_result["speaker_uid_ss"]
-        speaker_slug,speaker_name = search_result["speaker_uid_ss"].split("|")
-        speakers[speaker_slug] = speaker_name
-      end
-      @search_results << SearchResult.new(search_result["subject_ss"], search_result["url_ss"], search_result["speaker_uid_ss"], search_result["sitting_type_ss"], search_result["date_ds"], result["highlighting"][id]["text_texts"].join(" "))
-    end
+    @search = Search.new()
+    @search.search(query, @results_start, {:speaker => params["speaker"]})
+    @search_results = @search.search_results
+    @speaker_facets = @search.speaker_facets
+    @results_found = @search.results_found
+    @results_end = @search.results_end
+    @last_page = @search.last_page
     
     @filters = []
     if params[:speaker]
@@ -140,9 +119,9 @@ def do_search
           @filters << [speaker, "speaker"]
           break
         end
-      end
-      
+      end 
     end
+    
     if params[:type]
       @filters << [params[:type], "type"]
     end
