@@ -7,9 +7,8 @@ class SearchResult
     
     if speaker_uid
       parts = speaker_uid.split("|")
-      speaker_url = parts[0]
-      @speaker_name = speaker_name = parts[1]
-      @speaker_slug = speaker_url.split("/").pop
+      @speaker_name = parts[1]
+      @speaker_slug = parts[0]
     end
     
     @sitting_type = sitting_type

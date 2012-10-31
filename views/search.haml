@@ -1,11 +1,13 @@
 - if @search_results
-  - unless @speaker_facets.empty?
+  - unless @filters.empty?
+    =haml(:"_filters")
+  - unless @speaker_facets.empty? or @filters.join("|").include?("|speaker")
     %ol#by-member-facet
       Show only contributions by:
       - @speaker_facets[0..4].each do |uid, facet_count|
         %li
           - slug, name = uid.split("|")
-          %a{:href => "#{PARENT_URL}#{slug}"}= "#{name} (#{facet_count})"
+          %a{:href => "#{querystring_builder({"speaker"=>slug})}"}= "#{name} (#{facet_count})"
   %div#search-results
     - if @results_found > 1
       %div#sort-links

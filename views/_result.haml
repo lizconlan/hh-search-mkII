@@ -3,9 +3,9 @@
     %a{:href => result.url}= result.subject
   -if result.speaker_slug
     %cite
-      %a{:href => "?speaker=#{result.speaker_slug}", :title => "Show only results from #{result.speaker_name}"}= result.speaker_name
+      %a{:href => "#{querystring_builder({"speaker"=>result.speaker_slug})}", :title => "Show only results from #{result.speaker_name}"}= result.speaker_name
   %div.date
-    %a{:href => "?type=#{result.sitting_type}", :title => "Show only results from #{result.sitting_type}"}= result.sitting_type
+    %a{:href => "#{querystring_builder({"type"=>result.sitting_type})}", :title => "Show only results from #{result.sitting_type}"}= result.sitting_type
     = "- #{result.date.strftime("%B %d, %Y")}"
   %blockquote.search-result-fragment
     =result.highlight_text

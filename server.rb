@@ -3,19 +3,77 @@ require 'sunspot'
 require 'rest-client'
 require 'json'
 require 'haml'
+require 'active_record'
+require 'action_view'
 
-#require 'active_record'
+WEBSOLR_URL = "http://127.0.0.1:8983/solr"
+PARENT_URL = "http://hansard.millbanksystems.com"
+
+
+helpers do
+  def querystring_builder(option={})
+    remove = ""
+    page = params[:page].to_i
+    sort = params[:sort]
+    speaker = params[:speaker]
+    type = params[:type]
+    
+    #time options (mutually exclusive)
+    decade = params[:decade]
+    century = params[:century]
+    year = params[:year]
+    month = params[:month]
+    day = params[:day]
+    
+    qs = []
+    
+    name = option.keys.first
+    value = option[name]
+    if value.nil?
+      eval "#{name.to_s} = nil"
+      page = 0
+    else
+      eval "#{name.to_s} = '#{value}'"
+      page = 0 unless name.to_s == "page"
+    end
+    
+    if page and page > 1
+      qs << "page=#{page}"
+    end
+    #time stuff here
+    if day
+      qs << "day=#{day}"
+    elsif month
+      qs << "month=#{month}"
+    elsif year
+      qs << "year=#{year}"
+    elsif decade
+      qs << "decade=#{decade}"
+    elsif century
+      qs << "century=#{century}"
+    end
+    if sort
+      qs << "sort=#{sort}"
+    end
+    if speaker
+      qs << "speaker=#{speaker}"
+    end
+    if type
+      qs << "type=#{type}"
+    end
+    
+    qstring = qs.join("&")
+    qstring.empty? ? request.path_info : "?#{qstring}"
+  end
+end
+
 #require './models/person'
 require './models/search_result'
 #require './models/hansard_reference'
 
 before do
-  WEBSOLR_URL = "http://127.0.0.1:8983/solr"
-  
   #dbconfig = YAML::load(File.open 'config/database.yml')[ Sinatra::Application.environment.to_s ]
   #ActiveRecord::Base.establish_connection(dbconfig)
-  
-  PARENT_URL = "http://hansard.millbanksystems.com"
 end
 
 get "/" do
@@ -62,10 +120,36 @@ def do_search
     @results_end = @results_start + 9
     @results_end = @results_found if @results_end > @results_found
     @last_page = (@results_found / 10.0).ceil
+    speakers = {}
     
     result["response"]["docs"].each do |search_result|
       id = search_result["id"]
+      if search_result["speaker_uid_ss"]
+        speaker_slug,speaker_name = search_result["speaker_uid_ss"].split("|")
+        speakers[speaker_slug] = speaker_name
+      end
       @search_results << SearchResult.new(search_result["subject_ss"], search_result["url_ss"], search_result["speaker_uid_ss"], search_result["sitting_type_ss"], search_result["date_ds"], result["highlighting"][id]["text_texts"].join(" "))
+    end
+    
+    @filters = []
+    if params[:speaker]
+      @speaker_facets[0..5].each do |uuid|
+        slug,speaker = uuid.first.split("|")
+        if slug == params[:speaker]
+          @filters << [speaker, "speaker"]
+          break
+        end
+      end
+      
+    end
+    if params[:type]
+      @filters << [params[:type], "type"]
+    end
+    if params[:day]
+    elsif params[:month]
+    elsif params[:year]
+    elsif params[:decade]
+    elsif params[:century]
     end
   end
 end
