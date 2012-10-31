@@ -104,7 +104,12 @@ def do_search
     @page_title = "Search: #{query}"
     
     @search = Search.new()
-    @search.search(query, @results_start, {:speaker => params["speaker"]})
+    
+    options = {}
+    options[:type] => params[:type] if params[:type]
+    options[:speaker] => params[:speaker] if params[:speaker]
+    
+    @search.search(query, @results_start, options)
     @search_results = @search.search_results
     @speaker_facets = @search.speaker_facets
     @results_found = @search.results_found
