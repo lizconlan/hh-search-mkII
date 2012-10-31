@@ -1,5 +1,5 @@
 require 'sinatra'
-require 'sunspot'
+#require 'sunspot'
 require 'haml'
 require 'active_record'
 #require 'action_view'
