@@ -1,0 +1,27 @@
+%div.timeline
+  %table.timeline
+    %tbody.timeline-body
+      %tr.timeline-header-row
+        %td.timeline_header{:colspan => "#{timeline.blocks.count + 2}"}
+      %tr.timeline-navigation-row
+        %td.timeline_nav{:align => "center"}
+          - if timeline.start_link
+            %a{:href => timeline.start_link, :rel => "prev nofollow"}= timeline.start_text
+          - else
+            =timeline.start_text
+        - timeline.blocks.each do |block|
+          =haml(:"timeline/_block", :locals => {:block => block}, :layout => false)
+        %td.timeline_nav{:align => "center"}
+          - if timeline.end_link
+            %a{:href => timeline.end_link, :rel => "next nofollow"}= timeline.end_text
+          - else
+            =timeline.end_text
+      %tr.timeline-caption-row
+        %td
+        - timeline.block_captions.each do |caption|
+          %td.timeline_date{:valign => "top"}
+            %a{:href => caption.link}= caption.text
+        %td
+      %tr.timeline-summary-row
+        %td.timeline_title{:colspan => "#{timeline.blocks.count + 2}", :align => "center"}= timeline.title
+        

@@ -1,0 +1,4 @@
+%td.timeline_block{:nowrap => "nowrap", :valign => "bottom", :onclick => "#{block.link}"}
+  %a{:href => "#{block.link}"}
+    - block.bars.each do |bar|
+      %img.timeline_bar{:height => "#{bar.height}", :src => "/images/dot.gif", :width => "5"}<>
