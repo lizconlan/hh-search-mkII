@@ -1,8 +1,6 @@
 require 'sinatra'
-#require 'sunspot'
 require 'haml'
 require 'active_record'
-#require 'action_view'
 
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
 PARENT_URL = "http://hansard.millbanksystems.com"
@@ -227,22 +225,6 @@ def do_search
     elsif params[:century]
     end
   end
-end
-
-def facets_to_hash(facet_array)
-  output = {}
-  if facet_array.is_a?(Array)
-    field_count = ""
-    while facet_array.length > 0
-      if field_count == ""
-        field_count = facet_array.pop.to_i
-      else
-        output[facet_array.pop] = field_count
-        field_count = ""
-      end
-    end
-  end
-  output.sort_by{ |name, count| count }.reverse
 end
 
 def format_name(uid)
