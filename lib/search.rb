@@ -24,7 +24,7 @@ class Search
       end
       
       if options[:day]
-        url = "#{url}&fq=date_ds:#{options[:day]}T00\:00\:00Z"
+        url = "#{url}&fq=date_ds:#{options[:day]}T00%5C:00%5C:00Z"
       elsif options[:month]
         start_date = Date.parse("#{options[:month]}-01")
         end_date = (start_date >> 1)-1
