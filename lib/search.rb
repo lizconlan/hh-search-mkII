@@ -22,8 +22,24 @@ class Search
       if options[:type]
         url = "#{url}&fq=sitting_type_ss:#{CGI::escape(options[:type])}"
       end
+      
+      if options[:day]
+        url = "#{url}&fq=date_ds:#{options[:day]}T00\:00\:00Z"
+      elsif options[:month]
+        start_date = Date.parse("#{options[:month]}-01")
+        end_date = (start_date >> 1)-1
+        url = "#{url}&fq=date_ds:#{CGI::escape("[#{start_date}T00:00:00Z TO #{end_date}T00:00:00Z]")}"
+      elsif options[:year]
+        start_date = "#{options[:year]}-01-01"
+        end_date = "#{options[:year]}-12-31"
+        url = "#{url}&fq=date_ds:#{CGI::escape("[#{start_date}T00:00:00Z TO #{end_date}T00:00:00Z]")}"
+      elsif options[:decade]
+        start_date = options[:decade].gsub("s","-01-01")
+        end_date = options[:decade].gsub("00s","99-12-31")
+        url = "#{url}&fq=date_ds:#{CGI::escape("[#{start_date}T00:00:00Z TO #{end_date}T00:00:00Z]")}"
+      end
     end
-
+    
     response = RestClient.get(url)
     result = JSON.parse(response)
     
