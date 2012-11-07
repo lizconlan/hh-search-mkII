@@ -38,7 +38,7 @@ class Search
         end_date = options[:decade].gsub("0s","9-12-31")
         url = "#{url}&fq=date_ds:#{CGI::escape("[#{start_date}T00:00:00Z TO #{end_date}T00:00:00Z]")}"
       elsif options[:century]
-        century = options[:century].gsub("C", "").to_i - 1 * 100
+        century = (options[:century].gsub("C", "").to_i - 1) * 100
         start_date = "#{century}-01-01"
         end_date = century.to_s.gsub("00", "99-12-31")
         url = "#{url}&fq=date_ds:#{CGI::escape("[#{start_date}T00:00:00Z TO #{end_date}T00:00:00Z]")}"
