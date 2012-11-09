@@ -143,11 +143,11 @@ class TimelineTest < MiniTest::Spec
         @timeline_decade.next_text.must_equal("1810")
         @timeline_decade.next_link.must_equal({"decade" => "1810s"})
         
-        timeline_century = Timeline.new([["1900-01-01", 15]])
+        timeline_century = Timeline.new([["1900-01-01", 15], ["1915-01-01", 12]])
         timeline_century.prev_text.must_equal("19th century")
         timeline_century.prev_link.must_equal({"century" => "C19"})
         timeline_century.next_text.must_equal("21st century")
-        timeline_century.next_text.must_equal({"century" => "C21"})
+        timeline_century.next_link.must_equal({"century" => "C21"})
       end
       
       it "should not set previous links if they fall beyond min_date" do
