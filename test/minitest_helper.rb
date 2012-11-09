@@ -1,14 +1,21 @@
 gem 'minitest'
 require 'minitest/autorun'
 require 'turn'
-require 'mocha'
+
+# require 'test/unit/ui/console/testrunner'
+# 
+# class Test::Unit::UI::Console::TestRunner
+#   def guess_color_availability 
+#     true 
+#   end
+# end
 
 Turn.config do |c|
  # use one of output formats:
  # :outline  - turn's original case/test outline mode [default]
  # :progress - indicates progress with progress bar
  # :dotted   - test/unit's traditional dot-progress mode
- # :pretty   - new pretty reporter
+ # :pretty  # - new pretty reporter
  # :marshal  - dump output as YAML (normal run mode only)
  # :cue      - interactive testing
  c.format  = :outline

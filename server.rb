@@ -27,8 +27,12 @@ helpers do
     value = option[name]
     if value.nil?
       eval "#{name.to_s} = nil"
+      
       page = 0
     else
+      if ["decade", "century", "year", "month", "day"].include?(name.to_s)
+        day, month, year, decade, century = nil
+      end
       eval "#{name.to_s} = '#{value}'"
       page = 0 unless name.to_s == "page"
     end
@@ -77,104 +81,6 @@ before do
   #ActiveRecord::Base.establish_connection(dbconfig)
 end
 
-get "/test" do
-  @fake_timeline = Timeline.new()
-  @fake_timeline.title = "19th century"
-  @fake_timeline.start_text = "18th century"
-  @fake_timeline.end_link = "/sittings/C20"
-  @fake_timeline.end_text = "20th century"
-  block = TimelineBlock.new("/sittings/1800s")
-  block.bars << TimelineBar.new(3)
-  block.bars << TimelineBar.new(24)
-  block.bars << TimelineBar.new(33)
-  block.bars << TimelineBar.new(23)
-  @fake_timeline.blocks << block
-  @fake_timeline.block_captions << TimelineCaption.new("1800s", "/sittings/1800s")
-  
-  block = TimelineBlock.new("/sittings/1810s")
-  block.bars << TimelineBar.new(13)
-  block.bars << TimelineBar.new(17)
-  block.bars << TimelineBar.new(15)
-  block.bars << TimelineBar.new(10)
-  block.bars << TimelineBar.new(20)
-  @fake_timeline.blocks << block
-  @fake_timeline.block_captions << TimelineCaption.new("1810s", "/sittings/1810s")
-  
-  block = TimelineBlock.new("/sittings/1820s")
-  block.bars << TimelineBar.new(22)
-  block.bars << TimelineBar.new(20)
-  block.bars << TimelineBar.new(20)
-  block.bars << TimelineBar.new(19)
-  block.bars << TimelineBar.new(11)
-  @fake_timeline.blocks << block
-  @fake_timeline.block_captions << TimelineCaption.new("1820s", "/sittings/1820s")
-  
-  block = TimelineBlock.new("/sittings/1830s")
-  block.bars << TimelineBar.new(39)
-  block.bars << TimelineBar.new(40)
-  block.bars << TimelineBar.new(37)
-  block.bars << TimelineBar.new(38)
-  block.bars << TimelineBar.new(33)
-  @fake_timeline.blocks << block
-  @fake_timeline.block_captions << TimelineCaption.new("1830s", "/sittings/1830s")
-  
-  block = TimelineBlock.new("/sittings/1840s")
-  block.bars << TimelineBar.new(34)
-  block.bars << TimelineBar.new(36)
-  block.bars << TimelineBar.new(38)
-  block.bars << TimelineBar.new(39)
-  block.bars << TimelineBar.new(34)
-  @fake_timeline.blocks << block
-  @fake_timeline.block_captions << TimelineCaption.new("1840s", "/sittings/1840s")
-  
-  block = TimelineBlock.new("/sittings/1850s")
-  block.bars << TimelineBar.new(31)
-  block.bars << TimelineBar.new(35)
-  block.bars << TimelineBar.new(37)
-  block.bars << TimelineBar.new(33)
-  block.bars << TimelineBar.new(30)
-  @fake_timeline.blocks << block
-  @fake_timeline.block_captions << TimelineCaption.new("1850s", "/sittings/1850s")
-  
-  block = TimelineBlock.new("/sittings/1860s")
-  block.bars << TimelineBar.new(37)
-  block.bars << TimelineBar.new(30)
-  block.bars << TimelineBar.new(29)
-  block.bars << TimelineBar.new(36)
-  block.bars << TimelineBar.new(30)
-  @fake_timeline.blocks << block
-  @fake_timeline.block_captions << TimelineCaption.new("1860s", "/sittings/1860s")
-  
-  block = TimelineBlock.new("/sittings/1870s")
-  block.bars << TimelineBar.new(34)
-  block.bars << TimelineBar.new(32)
-  block.bars << TimelineBar.new(30)
-  block.bars << TimelineBar.new(33)
-  block.bars << TimelineBar.new(36)
-  @fake_timeline.blocks << block
-  @fake_timeline.block_captions << TimelineCaption.new("1870s", "/sittings/1870s")
-  
-  block = TimelineBlock.new("/sittings/1880s")
-  block.bars << TimelineBar.new(32)
-  block.bars << TimelineBar.new(40)
-  block.bars << TimelineBar.new(35)
-  block.bars << TimelineBar.new(35)
-  block.bars << TimelineBar.new(37)
-  @fake_timeline.blocks << block
-  @fake_timeline.block_captions << TimelineCaption.new("1880s", "/sittings/1880s")
-  
-  block = TimelineBlock.new("/sittings/1890s")
-  block.bars << TimelineBar.new(33)
-  block.bars << TimelineBar.new(38)
-  block.bars << TimelineBar.new(28)
-  block.bars << TimelineBar.new(32)
-  block.bars << TimelineBar.new(33)
-  @fake_timeline.blocks << block
-  @fake_timeline.block_captions << TimelineCaption.new("1890s", "/sittings/1890s")
-  
-  haml(:timeline_test)
-end
-
 get "/" do
   haml(:"search_help")
 end
@@ -198,11 +104,34 @@ def do_search
     
     @search = Search.new()
     options = {}
+    timeline_options = {}
     options[:type] = params[:type] if params[:type]
     options[:speaker] = params[:speaker] if params[:speaker]
     options[:sort] = params[:sort] if params[:sort]
     
+    options[:day] = params[:day] if params[:day] and /\d\d\d\d-\d\d?-\d\d?/.match params[:day]
+    if params[:month] and /\d\d\d\d-\d\d?/.match params[:month]
+      options[:month] = params[:month]
+      timeline_options = {:resolution => "month", :month => params[:month]}
+    end
+    if params[:year] and /\d\d\d\d/.match params[:year]
+      options[:year] = params[:year]
+      timeline_options = {:resolution => "year", :year => params[:year]}
+    end
+    if params[:decade] and /\d\d\d\ds/.match params[:decade]
+      options[:decade] = params[:decade]
+      timeline_options = {:resolution => "decade", :decade => params[:decade]}
+    end
+    if params[:century] and /C\d\d/.match params[:century]
+      options[:century] = params[:century]
+      timeline_options = {:resolution => "century", :century => params[:century]}
+    end
+    
     @search.search(query, params[:page], options)
+    
+    unless @search.results_found == 0 or options[:day]
+      @timeline = Timeline.new(@search.date_facets, timeline_options)
+    end
     
     @filters = []
     if params[:speaker]
@@ -217,12 +146,6 @@ def do_search
     
     if params[:type]
       @filters << [params[:type], "type"]
-    end
-    if params[:day]
-    elsif params[:month]
-    elsif params[:year]
-    elsif params[:decade]
-    elsif params[:century]
     end
   end
 end

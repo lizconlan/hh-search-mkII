@@ -1,0 +1,10 @@
+require 'autotest/restart'
+gem 'turn'
+require 'turn'
+
+Autotest.add_hook :initialize do |at|
+  at.testlib = "test/minitest_helper.rb"
+  at.add_mapping(/test\/.*\.rb/) do |_, m|
+    at.files_matching %r%^test/.*\.rb$%
+  end
+end

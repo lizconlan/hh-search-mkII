@@ -8,6 +8,8 @@
         %li
           - slug, name = uid.split("|")
           %a{:href => "#{querystring_builder({"speaker"=>slug})}"}= "#{name} (#{facet_count})"
+  -if @timeline
+    =haml(:"timeline/_timeline", :locals => {:timeline => @timeline})
   %div#search-results
     - if @search.results_found > 1
       %div#sort-links

@@ -3,25 +3,43 @@
     %tbody.timeline-body
       %tr.timeline-header-row
         %td.timeline_header{:colspan => "#{timeline.blocks.count + 2}"}
+          - if timeline.header_text
+            - if timeline.header_link
+              - if timeline.header_link.is_a?(Hash)
+                %a{:href => "#{querystring_builder(timeline.header_link)}", :rel => "up nofollow", :title => "Results for '#{params[:query]}' in #{timeline.header_text}"}= timeline.header_text
+              - else
+                %a{:href => "#{timeline.header_link}", :rel => "up nofollow"}= timeline.header_text
       %tr.timeline-navigation-row
         %td.timeline_nav{:align => "center"}
-          - if timeline.start_link
-            %a{:href => timeline.start_link, :rel => "prev nofollow"}= timeline.start_text
+          - if timeline.prev_link
+            - if timeline.prev_link.is_a?(Hash)
+              %a{:href => "#{querystring_builder(timeline.prev_link)}", :rel => "prev nofollow", :title => "Results for '#{params[:query]}' in #{timeline.prev_text}"}= timeline.prev_text
+            - else
+              %a{:href => timeline.prev_link, :rel => "prev nofollow"}= timeline.prev_text
           - else
-            =timeline.start_text
+            =timeline.prev_text
         - timeline.blocks.each do |block|
           =haml(:"timeline/_block", :locals => {:block => block}, :layout => false)
         %td.timeline_nav{:align => "center"}
-          - if timeline.end_link
-            %a{:href => timeline.end_link, :rel => "next nofollow"}= timeline.end_text
+          - if timeline.next_link
+            - if timeline.next_link.is_a?(Hash)
+              %a{:href => "#{querystring_builder(timeline.next_link)}", :rel => "prev nofollow", :title => "Results for '#{params[:query]}' in #{timeline.next_text}"}= timeline.next_text
+            - else
+              %a{:href => timeline.next_link, :rel => "prev nofollow"}= timeline.next_text
           - else
-            =timeline.end_text
+            =timeline.next_text
+        %td
       %tr.timeline-caption-row
         %td
         - timeline.block_captions.each do |caption|
           %td.timeline_date{:valign => "top"}
-            %a{:href => caption.link}= caption.text
-        %td
+            - if caption.link
+              - if caption.link.is_a?(Hash)
+                %a{:href => "#{querystring_builder(caption.link)}", :title => "Results for '#{params[:query]}' #{caption.title_text}"}= caption.text
+              -else
+                %a{:href => caption.link}= caption.text
+            - else
+              =caption.text
       %tr.timeline-summary-row
         %td.timeline_title{:colspan => "#{timeline.blocks.count + 2}", :align => "center"}= timeline.title
         

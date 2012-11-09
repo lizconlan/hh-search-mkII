@@ -131,17 +131,18 @@ class TimelineTest < MiniTest::Spec
         @timeline_month.prev_text.must_equal("Nov")
         @timeline_month.prev_link.must_equal({"month" => "1806-11"})
         @timeline_month.next_text.must_equal("Jan")
-        @timeline_month.next_link.must_equal({"month" => "1806-1"})
+        @timeline_month.next_link.must_equal({"month" => "1807-1"})
         
         @timeline_year.prev_text.must_equal("1805")
         @timeline_year.prev_link.must_equal({"year" => "1805"})
         @timeline_year.next_text.must_equal("1807")
         @timeline_year.next_link.must_equal({"year" => "1807"})
         
-        @timeline_decade.prev_text.must_equal("1790")
-        @timeline_decade.prev_link.must_equal({"decade" => "1790s"})
-        @timeline_decade.next_text.must_equal("1810")
-        @timeline_decade.next_link.must_equal({"decade" => "1810s"})
+        timeline_decade = Timeline.new([["1906-12-24", 16], ["1906-12-10", 2], ["1906-10-10", 2], ["1908-10-10", 5]])
+        timeline_decade.prev_text.must_equal("1890s")
+        timeline_decade.prev_link.must_equal({"decade" => "1890s"})
+        timeline_decade.next_text.must_equal("1910s")
+        timeline_decade.next_link.must_equal({"decade" => "1910s"})
         
         timeline_century = Timeline.new([["1900-01-01", 15], ["1915-01-01", 12]])
         timeline_century.prev_text.must_equal("19th century")
@@ -160,7 +161,7 @@ class TimelineTest < MiniTest::Spec
         timeline_year.prev_link.must_equal(nil)
         
         timeline_decade = Timeline.new([["1803-01-01", 42], ["1805-01-01", 6]])
-        timeline_decade.prev_text.must_equal("1790")
+        timeline_decade.prev_text.must_equal("1790s")
         timeline_decade.prev_link.must_equal(nil)
         
         @timeline_century.prev_text.must_equal("18th century")
@@ -192,7 +193,7 @@ class TimelineTest < MiniTest::Spec
         @timeline_year.block_captions.map{ |x| x.link }.must_equal([nil, nil, nil, nil, nil, nil, nil, nil, nil, {"month" => "1806-10"}, nil, {"month" => "1806-12"}])
         @timeline_decade.block_captions.map{ |x| x.text }.must_equal([1800, 1801, 1802, 1803, 1804, 1805, 1806, 1807, 1808, 1809])
         @timeline_decade.block_captions.map{ |x| x.link }.must_equal([nil, nil, nil, nil, nil, nil, {"year" => 1806}, nil, {"year" => 1808}, nil])
-        @timeline_century.block_captions.map{ |x| x.text }.must_equal([1800, 1810, 1820, 1830, 1840, 1850, 1860, 1870, 1880, 1890])
+        @timeline_century.block_captions.map{ |x| x.text }.must_equal(["1800s", "1810s", "1820s", "1830s", "1840s", "1850s", "1860s", "1870s", "1880s", "1890s"])
         @timeline_century.block_captions.map{ |x| x.link }.must_equal([{"decade" => "1800s"}, {"decade" => "1810s"}, nil, nil, nil, nil, nil, nil, nil, nil])
       end
       
