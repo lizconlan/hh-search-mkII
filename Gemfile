@@ -14,7 +14,6 @@ end
 
 group :test do
   gem 'minitest', :require => 'minitest'
-  gem 'mocha'
   gem 'turn'
   gem 'redgreen'
 end
