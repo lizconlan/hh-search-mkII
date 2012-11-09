@@ -24,6 +24,16 @@ class Timeline
     create_timeline()
   end
   
+  def self.number_to_ordinal(num)
+    num = num.to_i
+    if (10...20)===num
+      "#{num}th"
+    else
+      ordinal = %w{ th st nd rd th th th th th th }
+      "#{num}#{ordinal[num.modulo(10)]}"
+    end
+  end
+  
   def expected_resolutions
     ["month", "year", "decade", "century"]
   end
@@ -105,7 +115,7 @@ class Timeline
         @next_text = (vars[:year]+1).to_s
         @next_link = {"year" => "#{vars[:year]+1}"} unless vars[:year]+1 > max_year
       when "decade"
-        @header_text = "#{number_to_ordinal(vars[:century])} century"
+        @header_text = "#{self.class.number_to_ordinal(vars[:century])} century"
         @header_link = {"century" => "C#{vars[:century]}"}
         @prev_text = ("#{vars[:decade] - 10}s")
         @prev_link = {"decade" => "#{vars[:decade]-10}s"} unless vars[:decade]-10 < min_year
@@ -113,12 +123,12 @@ class Timeline
         @next_link = {"decade" => "#{vars[:decade]+10}s"} unless vars[:decade]+10 > max_year
       when "century"
         last_century = vars[:century] - 1
-        @prev_text = "#{number_to_ordinal(last_century)} century"
+        @prev_text = "#{self.class.number_to_ordinal(last_century)} century"
         @prev_link = {"century" => "C#{last_century}"} unless (last_century-1) < min_year.to_s[0..1].to_i
         next_century = vars[:century] + 1
-        @next_text = "#{number_to_ordinal(next_century)} century"
+        @next_text = "#{self.class.number_to_ordinal(next_century)} century"
         @next_link = {"century" => "C#{next_century}"} unless (next_century-1) > max_year.to_s[0..1].to_i
-        @title = "#{number_to_ordinal(vars[:century])} century"
+        @title = "#{self.class.number_to_ordinal(vars[:century])} century"
       end
     end
     
@@ -255,16 +265,6 @@ class Timeline
           @options[:century] = "#{first_date.year.to_s[0..1].to_i+1}C"
           return "century"
         end
-      end
-    end
-    
-    def number_to_ordinal(num)
-      num = num.to_i
-      if (10...20)===num
-        "#{num}th"
-      else
-        ordinal = %w{ th st nd rd th th th th th th }
-        "#{num}#{ordinal[num.modulo(10)]}"
       end
     end
 end

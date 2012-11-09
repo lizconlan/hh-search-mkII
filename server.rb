@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'haml'
 require 'active_record'
+require 'date'
 
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
 PARENT_URL = "http://hansard.millbanksystems.com"
@@ -146,6 +147,25 @@ def do_search
     
     if params[:type]
       @filters << [params[:type], "type"]
+    end
+    
+    if timeline_options[:resolution]
+      info = timeline_options[:"#{timeline_options[:resolution]}"]
+      label = ""
+      if info.include?("-")
+        parts = info.split("-")
+        if parts[1]
+          label = "#{Date::MONTHNAMES[parts[1].to_i]} #{parts[0]}"
+        end
+      elsif info =~ /C(\d+)/
+        label = "#{Timeline.number_to_ordinal($1)} century"
+      else
+        label = info
+      end
+      @filters << [label, timeline_options[:resolution]]
+    elsif options[:day]
+      date = Date.parse(options[:day])
+      @filters << ["#{date.day} #{Date::MONTHNAMES[date.month]} #{date.year}", "day"]
     end
   end
 end
