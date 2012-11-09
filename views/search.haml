@@ -1,4 +1,6 @@
 - if @search.search_results
+  -if @timeline
+    =haml(:"timeline/_timeline", :locals => {:timeline => @timeline})
   - unless @filters.empty?
     =haml(:"_filters")
   - unless @search.speaker_facets.empty? or @filters.join("|").include?("|speaker")
@@ -8,8 +10,6 @@
         %li
           - slug, name = uid.split("|")
           %a{:href => "#{querystring_builder({"speaker"=>slug})}"}= "#{name} (#{facet_count})"
-  -if @timeline
-    =haml(:"timeline/_timeline", :locals => {:timeline => @timeline})
   %div#search-results
     - if @search.results_found > 1
       %div#sort-links
