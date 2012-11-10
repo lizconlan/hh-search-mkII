@@ -16,4 +16,5 @@ group :test do
   gem 'minitest', :require => 'minitest'
   gem 'turn'
   gem 'redgreen'
+  gem 'simplecov', '0.7.1'
 end

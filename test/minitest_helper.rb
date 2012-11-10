@@ -1,3 +1,10 @@
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter 'test'
+  end
+end
+
 gem 'minitest'
 require 'minitest/autorun'
 require 'turn'
