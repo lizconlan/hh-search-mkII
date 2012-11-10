@@ -2,9 +2,6 @@ require_relative 'minitest_helper.rb'
 require_relative '../models/timeline.rb'
 
 class TimelineTest < MiniTest::Spec
-  def setup
-  end
-  
   describe Timeline do
     describe "when creating a new object" do
       it "should fail if not given a parameter" do
