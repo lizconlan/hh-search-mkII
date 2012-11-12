@@ -102,7 +102,7 @@ def do_search
     
     @page_title = "Search: #{query}"
     
-    @people = Person.where("name like ?", "%#{query}%")
+    @people = Person.where("name like ?", "%#{query}%").order("lastname")
     @search = Search.new()
     options = {}
     timeline_options = {}
