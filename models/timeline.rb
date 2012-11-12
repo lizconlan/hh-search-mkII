@@ -12,7 +12,11 @@ class Timeline
     @options = options
     
     items = items.sort_by{ |_, count| count }.reverse
-    @divider = items.first[1] / 40.0
+    if items.first
+      @divider = items.first[1] / 40.0
+    else
+      @divider = 0
+    end
     @items = items.sort_by{ |date, _| Date.parse(date) }
     
     if options[:resolution] and expected_resolutions.include?(options[:resolution])

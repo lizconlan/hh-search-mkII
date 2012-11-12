@@ -200,6 +200,11 @@ class TimelineTest < MiniTest::Spec
         @timeline_year.blocks[11].bars[0].height.must_equal(5)
         @timeline_year.blocks[11].bars[1].height.must_equal(40)
       end
+      
+      it "should be able to draw an empty timeline" do
+        blank = Timeline.new([], {:resolution=>"year", :year=>"2006"})
+        blank.blocks.count.must_equal(12)
+      end
     end
   end
 end
