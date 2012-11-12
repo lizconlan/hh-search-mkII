@@ -1,0 +1,8 @@
+%div#speaker-matches
+  Search for speeches by:
+  - people[0..4].each do |person|
+    -if person == people.last or person == people[4]
+      %a.speaker-match{:href => "#{PARENT_URL}/people/#{person.slug}"}= "#{person.honorific} #{person.name}"
+    -else
+      =succeed ", " do
+        %a.speaker-match{:href => "#{PARENT_URL}/people/#{person.slug}"}= "#{person.honorific} #{person.name}"

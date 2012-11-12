@@ -1,4 +1,6 @@
 - if @search.search_results
+  - if @people and !@people.empty?
+    =haml(:"_people", :locals => {:people => @people})
   -if @timeline
     =haml(:"timeline/_timeline", :locals => {:timeline => @timeline})
   - unless @filters.empty?

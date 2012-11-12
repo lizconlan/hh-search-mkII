@@ -6,7 +6,6 @@ require 'date'
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
 PARENT_URL = "http://hansard.millbanksystems.com"
 
-
 helpers do
   def querystring_builder(option={})
     remove = ""
@@ -69,7 +68,7 @@ helpers do
   end
 end
 
-#require './models/person'
+require './models/person'
 require './models/search_result'
 #require './models/hansard_reference'
 
@@ -78,8 +77,8 @@ require './models/timeline.rb'
 require './lib/search'
 
 before do
-  #dbconfig = YAML::load(File.open 'config/database.yml')[ Sinatra::Application.environment.to_s ]
-  #ActiveRecord::Base.establish_connection(dbconfig)
+  dbconfig = YAML::load(File.open 'config/database.yml')
+  ActiveRecord::Base.establish_connection(dbconfig)
 end
 
 get "/" do
@@ -103,6 +102,7 @@ def do_search
     
     @page_title = "Search: #{query}"
     
+    @people = Person.where("name like ?", "%#{query}%")
     @search = Search.new()
     options = {}
     timeline_options = {}
