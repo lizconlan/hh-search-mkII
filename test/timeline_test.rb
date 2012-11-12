@@ -205,6 +205,11 @@ class TimelineTest < MiniTest::Spec
         blank = Timeline.new([], {:resolution=>"year", :year=>"2006"})
         blank.blocks.count.must_equal(12)
       end
+      
+      it "should not add more than 6 bars to a block" do
+        massive = Timeline.new([["1806-11-10", 2], ["1806-11-08", 11], ["1806-11-16", 4], ["1806-11-17", 24], ["1806-11-18", 5], ["1806-11-19", 24], ["1806-11-20", 14]], {:resolution=>"year", :year=>"1806"})
+        massive.blocks[10].bars.size.must_equal(4)
+      end
     end
   end
 end
