@@ -18,3 +18,10 @@
       %h1.title&= @page_title || "Search"
     %div.page{:id => "content"}
       =yield
+    %div#footer
+      %p
+        %a{:href => "#{PARENT_URL}/typos"} Noticed a typo?
+        |
+        %a{:href => "https://spreadsheets.google.com/viewform?key=p_zCPmAX1qx1llDkHKzRlNQ", :target => "_BLANK", :title => "Opens a new page"} Report other issues
+        |
+        %a#copyright{:href => "http://www.parliament.uk/site_information/parliamentary_copyright.cfm", :rel => "copyright"} &copy; UK Parliament
