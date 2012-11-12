@@ -2,7 +2,7 @@
   %head
     %meta{:charset => "utf-8"}
     %title
-      =@page_title || "Search"
+      &=@page_title || "Search"
       (Hansard)
     %link{:href => "/stylesheets/screen.css", :media => "screen", :rel => "stylesheet", :title => "Default", :type => "text/css"}
     %link{:href => "/stylesheets/print.css", :media => "print", :rel => "stylesheet", :type => "text/css"}
@@ -15,6 +15,6 @@
         %input{:type => "submit", :value => "Search"}
       %div#nav
         %a{:href => "#{PARENT_URL}/", :id => "home", :rel => "home"} HANSARD 1803-2005
-      %h1.title= @page_title || "Search"
+      %h1.title&= @page_title || "Search"
     %div.page{:id => "content"}
       =yield

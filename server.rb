@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'haml'
 require 'active_record'
+require 'sanitize'
 require 'date'
 
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
@@ -96,13 +97,15 @@ get "/:query" do
 end
 
 def do_search  
-  query = params[:query]
-  if query
-    #reference = HansardReference.create_from(query)
+  @query = params[:query]
+  @query = Sanitize.clean(@query)
     
-    @page_title = "Search: #{query}"
+  if @query
+    #reference = HansardReference.create_from(@query)
     
-    @people = Person.where("name like ?", "%#{query}%").order("lastname, name").limit(5)
+    @page_title = "Search: #{@query}"
+    
+    @people = Person.where("name like ?", "%#{@query}%").order("lastname, name").limit(5)
     @search = Search.new()
     options = {}
     timeline_options = {}
@@ -128,7 +131,7 @@ def do_search
       timeline_options = {:resolution => "century", :century => params[:century]}
     end
     
-    @search.search(query, params[:page], options)
+    @search.search(@query, params[:page], options)
     
     unless @search.results_found == 0 or options[:day]
       @timeline = Timeline.new(@search.date_facets, timeline_options)
