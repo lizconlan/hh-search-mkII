@@ -1,5 +1,6 @@
 require 'rest-client'
 require 'json'
+require 'sanitize'
 
 class Search
   attr_reader :search_results, :speaker_facets, :date_facets, :results_found, :results_end, :results_start, :last_page, :page
@@ -8,6 +9,7 @@ class Search
     @page = page ? page.to_i : 1
     @page = 1 if @page < 1
     @results_start = (@page-1)*10+1
+    query = Sanitize.clean(query)
     
     url = WEBSOLR_URL + "/select/?q=text_texts:#{CGI::escape(query)}&start=#{results_start-1}&facet=true&facet.field=date_ds&facet.field=sitting_type_ss&facet.field=speaker_uid_ss&wt=json&hl.fragsize=200&hl=true&hl.fl=text_texts&facet.zeros=false"
     unless options.empty?
@@ -45,8 +47,18 @@ class Search
       end
     end
     
-    response = RestClient.get(url)
-    result = JSON.parse(response)
+   begin
+      response = RestClient.get(url)
+      result = JSON.parse(response)
+    rescue RestClient::BadRequest
+      @search_results = []
+      @results_found = 0
+      @results_end = 0
+      @last_page = 0
+      @speaker_facets = []
+      @date_facets = []
+      return
+    end
     
     @search_results = []
     
