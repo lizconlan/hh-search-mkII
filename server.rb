@@ -67,6 +67,11 @@ helpers do
     qstring = qs.join("&")
     qstring.empty? ? request.path_info : "?#{qstring}"
   end
+
+  def filtered_by_date?
+    filter_fields = @filters ? @filters.map{ |_, value| value } : ""
+    filter_fields.include?("century") or filter_fields.include?("decade") or filter_fields.include?("year") or filter_fields.include?("month")
+  end
 end
 
 require './models/person'
@@ -110,7 +115,7 @@ def do_search
     options = {}
     timeline_options = {}
     options[:type] = params[:type] if params[:type]
-    options[:speaker] = params[:speaker] if params[:speaker]
+    options[:speaker] = params[:speaker] if params[:speaker] and Person.find_by_slug(params[:speaker])
     options[:sort] = params[:sort] if params[:sort]
     
     options[:day] = params[:day] if params[:day] and /\d\d\d\d-\d\d?-\d\d?/.match params[:day]
@@ -133,18 +138,14 @@ def do_search
     
     @search.search(@query, params[:page], options)
     
-    unless @search.results_found == 0 or options[:day]
-      @timeline = Timeline.new(@search.date_facets, timeline_options)
+    if @search.results_found == 0
+      @page_title = "Search: no results for '#{@query}'"
     end
     
     @filters = []
     if params[:speaker]
-      @search.speaker_facets[0..5].each do |uuid|
-        slug,speaker = uuid.first.split("|")
-        if slug == params[:speaker]
-          @filters << [speaker, "speaker"]
-          break
-        end
+      if (person = Person.find_by_slug(params[:speaker]))
+        @filters << ["#{person.honorific} #{person.name}", "speaker"]
       end 
     end
     
@@ -169,6 +170,10 @@ def do_search
     elsif options[:day]
       date = Date.parse(options[:day])
       @filters << ["#{date.day} #{Date::MONTHNAMES[date.month]} #{date.year}", "day"]
+    end
+    
+    unless !filtered_by_date? and @search.results_found == 0 or options[:day]
+      @timeline = Timeline.new(@search.date_facets, timeline_options)
     end
   end
 end
