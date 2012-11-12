@@ -1,5 +1,5 @@
 - if @search.search_results
-  - if @people and !@people.empty?
+  - if @people and !@people.empty? and params[:speaker] == nil
     =haml(:"_people", :locals => {:people => @people})
   -if @timeline
     =haml(:"timeline/_timeline", :locals => {:timeline => @timeline})
@@ -12,8 +12,10 @@
         %li
           - slug, name = uid.split("|")
           %a{:href => "#{querystring_builder({"speaker"=>slug})}"}= "#{name} (#{facet_count})"
-  %div#search-results
-    - if @search.results_found > 1
+  - if @search.results_found < 1
+    =haml(:"_no_results")
+  - else
+    %div#search-results
       %div#sort-links
         - if params[:sort] == "reverse_date"
           Sort by MOST RECENT
@@ -39,7 +41,7 @@
         = "Results #{@search.results_start} to #{@search.results_end} of #{@search.results_found}"
     - @search.search_results.each do |result_line|
       =haml(:"_result", :locals => {:result => result_line}, :layout => false)
-  -if @search.last_page > 1
-    %div.pagination
+    -if @search.last_page > 1
       %div.pagination
-        =haml(:"_pagination")
+        %div.pagination
+          =haml(:"_pagination")

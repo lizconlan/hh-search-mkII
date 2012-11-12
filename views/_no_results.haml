@@ -1,0 +1,12 @@
+%p
+  - if filtered_by_date?
+    &="Sorry. We couldn't find any results for '#{@query}' in this period."
+  - else
+    &="Sorry. We couldn't find anything when we tried searching for '#{@query}'."
+- if @filters
+  %p
+    Would you like to
+    %a{:href => "/#{@query}"} search
+    &="for '#{@query}' without any filters?"
+%p
+  %a{:href => "#{PARENT_URL}/search"} Search Help
