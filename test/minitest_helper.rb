@@ -9,6 +9,10 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'turn'
 
+require 'active_record'
+dbconfig = YAML::load(File.open 'config/database.yml')
+ActiveRecord::Base.establish_connection(dbconfig)
+
 # require 'test/unit/ui/console/testrunner'
 # 
 # class Test::Unit::UI::Console::TestRunner

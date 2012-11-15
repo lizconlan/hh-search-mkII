@@ -15,6 +15,15 @@ class HansardReferenceTest < MiniTest::Spec
           result = HansardReference.lookup("HC Deb 19 July 1982 vol 28 cc58-9w")
           result.must_be_instance_of(HansardReference)
         end
+        
+        it "should return false if there is no matching sitting day" do
+          #18th July 1982 was a Sunday so this shouldn't work
+          partial_result = HansardReference.lookup("HC Deb 18 July 1982 vol 28")
+          partial_result.must_equal(false)
+          
+          full_result = HansardReference.lookup("HC Deb 18 July 1982 vol 28 cc58-9w")
+          full_result.must_equal(false)
+        end
       end
       
       describe "on success" do
@@ -28,29 +37,25 @@ class HansardReferenceTest < MiniTest::Spec
       
         it "should return a partial match for an incomplete reference" do
           result = HansardReference.lookup("HC Deb 19 July 1982 vol 28")
-          result.url.must_equal("sittings/1982/jul/19")
+          result.url.must_equal("/sittings/1982/jul/19")
           result.match_type.must_equal("partial")
         end
         
         it "should return a full match for a complete reference" do
           result = HansardReference.lookup("HC Deb 19 July 1982 vol 28 cc58-9w")
-          result.url.must_equal('written_answers/1982/jul/19/laindon-common-bomb-disposal#column_58w')
+          result.url.must_equal('/written_answers/1982/jul/19/laindon-common-bomb-disposal#column_58w')
           result.match_type.must_equal("full")
         end
         
         it "should return the first section in a column when only given a start_column reference" do
           result = HansardReference.lookup("HL Deb 15 January 1980 vol 404 c13")
-          result.url.must_equal('lords/1980/jan/15/furskins-bill-hl#column_13')
+          result.url.must_equal('/lords/1980/jan/15/furskins-bill-hl#column_13')
         end
         
         it "should identify the House and sitting type" do
           result = HansardReference.lookup("HL Deb 15 January 1980 vol 404 cc85-7WA")
           result.house.must_equal("Lords")
           result.sitting_type.must_equal("Written Answers")
-          
-          result = HansardReference.lookup("Deb 19 July 1822 vol 7 cc1714-6")
-          result.house.must_equal("Lords")
-          result.sitting_type.must_equal("Lords report")
           
           result = HansardReference.lookup("HL Deb 12 November 1997 vol 583 cc1-52GC")
           result.house.must_equal("Lords")
@@ -75,6 +80,10 @@ class HansardReferenceTest < MiniTest::Spec
           result = HansardReference.lookup("HL Deb 20 April 1888 vol 325 c7")
           result.house.must_equal("Lords")
           result.sitting_type.must_equal("Lords sitting")
+          
+          result = HansardReference.lookup("Deb 19 July 1822 vol 7 cc1714-6")
+          result.house.must_equal("Lords")
+          result.sitting_type.must_equal("Lords reports")
         end
       end
     end
