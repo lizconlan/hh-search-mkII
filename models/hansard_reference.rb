@@ -1,189 +1,141 @@
 # encoding: utf-8
 
+require './models/section'
+
 class HansardReference
-
-  attr_reader :house, :date, :volume, :column, :end_column, :series
-
+  attr_reader :house, :date, :column, :end_column, :url, :match_type, :sitting_type
+  
   MONTHS = Date::MONTHNAMES[1..12]
   SHORT_MONTHS = Date::ABBR_MONTHNAMES[1..12]
-
+  
   REFERENCE_PATTERN = /H(C|L) Deb\s+.+$/i
-
+  ALT_REFERENCE_PATTERN = /^Deb\s+.+$/i
+  
   DATE_PATTERN = /(?:\s|\A)(\d\d?)\s+(#{MONTHS.join('|')}|#{SHORT_MONTHS.join('|')}|Sept)\s+(\d\d\d\d)/i
-
+  
   VOLUME_PATTERN = /vol\s*(\d+)/i
   ALT_VOLUME_PATTERN = /^(\d+)\sH(L|C)/
-
+  
   COLUMN_PATTERN = /c\.?(?:olumns? )?(\d+)(\s*(-|–)\s*(\d+))?/i
-
+  
   SERIES_PATTERN = /\((\S+)\s+series\)/i
-
+  
   WRITTEN_STATEMENT_PATTERN = /\d\s*WS/i
-
+  
   WRITTEN_ANSWER_PATTERN = /\d\s*W/i
-
+  
   WESTMINSTER_HALL_PATTERN = /\d\s*WH/i
-
+  
   GRAND_COMMITTEE_PATTERN = /\d\s*GC/i
-
+  
   COLUMN_NUMBER_PATTERN = / (c?c) (\d)/
 
-  def self.create_from text
-    attributes = {}
+  def self.lookup(text)
+    house = date = column = end_column = sitting_type = nil
+    url = ""
     text = text.tr('.,','')
-    if (match = COLUMN_NUMBER_PATTERN.match text)
-      text.sub!(match[0], ' '+match[1]+match[2])
-    end
-
-    self.populate_house attributes, text
-    self.populate_date attributes, text
-    if attributes.has_key?(:house) || attributes.has_key?(:date)
-      if match = VOLUME_PATTERN.match(text)
-        attributes[:volume] = match[1].to_i
-      elsif match = ALT_VOLUME_PATTERN.match(text)
-        attributes[:volume] = match[1].to_i
-      end
-
-      attributes[:column], attributes[:end_column] = self.find_columns text
-
-      if match = SERIES_PATTERN.match(text)
-        attributes[:series] = match[1]
-      end
-
-      if WRITTEN_STATEMENT_PATTERN.match(text)
-        attributes[:written_statement] = true
-      elsif WESTMINSTER_HALL_PATTERN.match(text)
-        attributes[:westminster_hall] = true
-      elsif WRITTEN_ANSWER_PATTERN.match(text)
-        attributes[:written_answer] = true
-      elsif GRAND_COMMITTEE_PATTERN.match(text)
-        attributes[:grand_committee] = true
+    unless REFERENCE_PATTERN.match(text)
+      if ALT_REFERENCE_PATTERN.match(text)
+        #assume it's a Lords Report
+        house = "Lords"
+        sitting_type = "Lords reports"
+      else
+        return false
       end
     end
-
-    reference = HansardReference.new(attributes)
-    if reference.is_reference?
-      reference
+    
+    house = self.find_house(text) unless house
+    return false unless house
+    
+    date = self.find_date(text)
+    return false unless date.is_a?(Date)
+    
+    if COLUMN_NUMBER_PATTERN.match(text)
+      column, end_column = self.find_columns(text)
+    elsif COLUMN_PATTERN.match(text)
+      column, end_column = self.find_columns(text)
     else
-      nil
+      if Section.where(:date => date).limit(1).empty?
+        return false
+      else
+        url = "/sittings/#{date.year}/#{SHORT_MONTHS[date.month-1].downcase}/#{date.day}"
+        return HansardReference.new({:url => url, :match_type => "partial"})
+      end
+    end
+    
+    if WRITTEN_STATEMENT_PATTERN.match(text)
+      sitting_type = "Written Statements"
+    elsif WESTMINSTER_HALL_PATTERN.match(text)
+      sitting_type = "Westminster Hall"
+    elsif WRITTEN_ANSWER_PATTERN.match(text)
+      sitting_type = "Written Answers"
+    elsif GRAND_COMMITTEE_PATTERN.match(text)
+      sitting_type = "Grand Committee report"
+    else
+      sitting_type = nil unless sitting_type == "Lords reports"
+    end
+    
+    if sitting_type
+      sitting = self.get_db_sitting_type(sitting_type, house)
+      ref = find_matching_section(date, sitting, column, end_column)
+    else
+      sitting = self.get_db_sitting_type("no match", house)
+      ref = find_matching_section(date, sitting, column, end_column)
+      sitting_type = sitting_type_from_db_sitting_type(sitting)
+    end
+    
+    if ref
+      url = construct_url(house, date, ref.slug, ref.start_column, sitting_type)
+      HansardReference.new({:sitting_type => sitting_type, :match_type => "full", :url => url, :house => house})
+    else
+      return false
     end
   end
-
-  def initialize attributes
-    @house  = attributes[:house]
-    @date   = attributes[:date]
-    @column = attributes[:column]
-    @end_column = attributes[:end_column]
-    @volume = attributes[:volume] if attributes[:volume]
-    @series = attributes[:series] if attributes[:series]
-    @written_statement = attributes[:written_statement] if attributes[:written_statement]
-    @written_answer = attributes[:written_answer] if attributes[:written_answer]
-    @westminster_hall = attributes[:westminster_hall] if attributes[:westminster_hall]
-    @grand_committee = attributes[:grand_committee] if attributes[:grand_committee]
+  
+  def initialize(attributes)
+    @url = attributes[:url] if attributes[:url]
+    @match_type = attributes[:match_type] if attributes[:match_type]
+    @sitting_type = attributes[:sitting_type] if attributes[:sitting_type]
+    @house = attributes[:house] if attributes[:house]
   end
-
-  def is_reference?
-    (@date and @column) ? true : false
-  end
-
-  def is_written_statement?
-    @written_statement ? true : false
-  end
-
-  def is_written_answer?
-    @written_answer ? true : false
-  end
-
-  def is_westminster_hall?
-    @westminster_hall ? true : false
-  end
-
-  def is_grand_committee?
-    @grand_committee ? true : false
-  end
-
+  
   def year
     @date.year
   end
-
+  
   def date_to_s
     @date.day.to_s + ' ' + MONTHS[@date.month - 1] + ' ' + @date.year.to_s
   end
-
-  def find_sections
-    @sections ||= search_sections
-  end
-
-  def search_sections
-    sections = []
-    if house == :commons
-      sections << find_commons_section
-    elsif house == :lords
-      sections << find_lords_section
-    else
-      sections = find_section_without_house
-    end
-    sections.compact
-  end
   
-  def column_suffix
-    find_sections.first.sitting.class.hansard_reference_suffix if !find_sections.empty?
-  end
   
   private
-  
-    def find_in_sitting_type(sitting_type)
-      sitting_type.find_section_by_column_and_date(column, date, end_column)
-    end
     
-    def find_commons_section
-      sitting_type = nil
-      if is_written_statement?
-        sitting_type = CommonsWrittenStatementsSitting
-      elsif is_written_answer?
-        sitting_type = CommonsWrittenAnswersSitting
-      elsif is_westminster_hall?
-        sitting_type = WestminsterHallSitting
-      else
-        sitting_type = HouseOfCommonsSitting
-      end
-      find_in_sitting_type(sitting_type)
-    end
-  
-    def find_lords_section
-      sitting_type = nil
-      if is_written_statement?
-        sitting_type = LordsWrittenStatementsSitting
-      elsif is_written_answer?
-        sitting_type = LordsWrittenAnswersSitting
-      elsif is_grand_committee?
-        sitting_type = GrandCommitteeReportSitting
-      else
-        sitting_type = HouseOfLordsSitting
-      end
-      find_in_sitting_type(sitting_type)
-    end
-    
-    def find_section_without_house
-      sections = []
-      if is_written_answer?
-        sections << find_in_sitting_type(CommonsWrittenAnswersSitting)
-        sections << find_in_sitting_type(LordsWrittenAnswersSitting)
-        if sections.compact.empty?
-          sections << find_in_sitting_type(WrittenAnswersSitting)
+    def self.construct_url(house, date, slug, start_column, sitting_type)
+      url_date = "#{date.year}/#{SHORT_MONTHS[date.month-1].downcase}/#{date.day.to_s.rjust(2, "0")}"
+      case sitting_type
+      when "Commons sitting", "Lords sitting"
+        "/#{house.downcase()}/#{url_date}/#{slug}#column_#{start_column}"
+      when "Written Answers"
+        if house == "Commons"
+          "/written_answers/#{url_date}/#{slug}#column_#{start_column}w"
+        else
+          "/written_answers/#{url_date}/#{slug}#column_#{start_column}wa"
         end
-      elsif is_westminster_hall?
-        sections << find_in_sitting_type(WestminsterHallSitting)
-      else
-        sections << find_in_sitting_type(HouseOfCommonsSitting)
-        sections << find_in_sitting_type(HouseOfLordsSitting)
+      when "Grand Committee report"
+        "/grand_committee_report/#{url_date}/#{slug}#column_#{start_column}gc"
+      when "Westminster Hall"
+        "/westminster_hall/#{url_date}/#{slug}#column_#{start_column}wh"
+      when "Written Statements"
+        "/written_statements/#{url_date}/#{slug}#column_#{start_column}ws"
+      when "Lords reports"
+        "/lords_reports/#{url_date}/#{slug}#column_#{start_column}"
+      else ""
       end
-      sections
     end
     
     def self.find_columns text
       start_column = end_column = nil
-  
+      
       if match = COLUMN_PATTERN.match(text)
         start_text = match[1]
         start_column = start_text.to_i
@@ -206,19 +158,63 @@ class HansardReference
       return start_column, end_column
     end
     
-    def self.populate_house attributes, text
-      if match = REFERENCE_PATTERN.match(text)
-        house_id = match[1].upcase
-        if house_id == 'C'
-          attributes[:house] = :commons
-        elsif house_id == 'L'
-          attributes[:house] = :lords
-        end
+    def self.get_db_sitting_type(type, house)
+      case type
+      when "Written Answers"
+        "#{house}WrittenAnswersSitting"
+      when "Westminster Hall"
+        "WestminsterHallSitting"
+      when "Written Statements"
+        "#{house}WrittenStatementsSitting"
+      when "Grand Committee report"
+        "GrandCommitteeReportSitting"
+      when "Lords reports"
+        "HouseOfLordsReport"
+      else
+        "HouseOf#{house}Sitting"
       end
     end
-
-    def self.populate_date attributes, text
-      if match = DATE_PATTERN.match(text)
+    
+    def self.find_matching_section(date, sitting_type, start_column, end_column)
+      if end_column
+       Section.where("date = ? and sitting_type = ? and start_column <= ? and end_column >= ?", date, sitting_type, start_column, end_column).order("start_column DESC").limit(1).first
+      else
+       Section.where("date = ? and sitting_type = ? and start_column <= ?", date, sitting_type, start_column).order("start_column DESC").limit(1).first
+      end
+    end
+    
+    def self.sitting_type_from_db_sitting_type(db_sitting_type)
+      case db_sitting_type
+      when /WrittenAnswersSitting/
+        "Written Answers"
+      when /WestminsterHallSitting/
+        "Westminster Hall"
+      when /WrittenStatementsSitting/
+        "Written Statements"
+      when /GrandCommitteeReportSitting/
+        "Grand Committee report"
+      when /LordsReport/
+        "Lords reports"
+      when /HouseOf(.*)Sitting/
+        "#{$1} sitting"
+      end
+    end
+    
+    def self.find_house(text)
+      if match = REFERENCE_PATTERN.match(text)
+        house_id = match[1]
+        house_id = house_id.upcase if house_id
+        if house_id == 'C'
+          return "Commons"
+        elsif house_id == 'L'
+          return "Lords"
+        end
+      end
+      nil
+    end
+    
+    def self.find_date(text)
+      if (match = DATE_PATTERN.match(text))
         month = match[2].capitalize
         month_index = if month == 'Sept'
           9
@@ -227,8 +223,14 @@ class HansardReference
         elsif SHORT_MONTHS.index(month)
           SHORT_MONTHS.index(month) + 1
         end
-
-        attributes[:date] = Date.new(match[match.size - 1].to_i, month_index, match[1].to_i)
+        
+        begin
+          Date.new(match[match.size - 1].to_i, month_index, match[1].to_i)
+        rescue
+          nil
+        end
+      else
+        nil
       end
     end
 end
