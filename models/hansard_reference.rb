@@ -85,7 +85,7 @@ class HansardReference
     end
     
     if ref
-      url = construct_url(house, date, ref.slug, ref.start_column, sitting_type)
+      url = construct_url(house, date, ref.slug, column, sitting_type)
       HansardReference.new({:sitting_type => sitting_type, :match_type => "full", :url => url, :house => house})
     else
       return false
@@ -177,9 +177,14 @@ class HansardReference
     
     def self.find_matching_section(date, sitting_type, start_column, end_column)
       if end_column
-       Section.where("date = ? and sitting_type = ? and start_column <= ? and end_column >= ?", date, sitting_type, start_column, end_column).order("start_column DESC").limit(1).first
+        Section.where("date = ? and sitting_type = ? and start_column <= ? and end_column >= ?", date, sitting_type, start_column, end_column).order("start_column DESC").limit(1).first
       else
-       Section.where("date = ? and sitting_type = ? and start_column <= ?", date, sitting_type, start_column).order("start_column DESC").limit(1).first
+        sections = Section.where("date = ? and sitting_type = ? and start_column <= ? and end_column >= ?", date, sitting_type, start_column, start_column)
+        if sections.count > 1 and sections.first.section_type =~ /Group/
+          sections[1]
+        else
+          sections[0]
+        end
       end
     end
     
