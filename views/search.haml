@@ -5,6 +5,10 @@
     =haml(:"timeline/_timeline", :locals => {:timeline => @timeline})
   - unless @filters.empty?
     =haml(:"_filters")
+  - if @date_match
+    %div#sitting-date-matches
+      Jump to: 
+      %a{:href => "#{PARENT_URL}/sittings/#{@date_match.date.year}/#{@date_match.date.month}/#{@date_match.date.day}"}= "Sitting of #{@date_match.date_to_s}"
   - unless @search.speaker_facets.empty? or @filters.join("|").include?("|speaker")
     %ol#by-member-facet
       Show only contributions by:

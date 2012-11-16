@@ -3,7 +3,7 @@
     &="Sorry. We couldn't find any results for '#{@query}' in this period."
   - else
     &="Sorry. We couldn't find anything when we tried searching for '#{@query}'."
-- if @filters
+- unless @filters.empty?
   %p
     Would you like to
     %a{:href => "/#{@query}"} search

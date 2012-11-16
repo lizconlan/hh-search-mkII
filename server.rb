@@ -104,18 +104,20 @@ get "/:query" do
       @page_title = 'Hansard not found'
       haml(:reference_not_found)
     elsif @reference.match_type == "partial"
-      #meh
+      @date_match = @reference
     else
       redirect "#{PARENT_URL}#{reference.url}"
     end
-  else
+  end
+  
+  if !@reference or @reference.match_type == "partial"
     do_search
     haml(:search)
   end
 end
 
-def do_search  
-  @query = params[:query]
+def do_search
+  @query = CGI::unescape(params[:query])
   @query = Sanitize.clean(@query)
     
   if @query
