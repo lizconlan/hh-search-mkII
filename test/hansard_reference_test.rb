@@ -21,13 +21,20 @@ class HansardReferenceTest < MiniTest::Spec
           result.must_be_instance_of(HansardReference)
         end
         
-        it "should return false if there is no matching sitting day" do
+        it "should return a HansardReference with a match_type of 'not stored' if there is no matching sitting day" do
           #18th July 1982 was a Sunday so this shouldn't work
           partial_result = HansardReference.lookup("HC Deb 18 July 1982 vol 28")
-          partial_result.must_equal(false)
+          partial_result.must_be_instance_of(HansardReference)
+          partial_result.match_type.must_equal("not stored")
+          partial_result.date.must_equal(Date.parse("1982-07-18"))
+          partial_result.volume.must_equal("28")
+          partial_result.house.must_equal("Commons")
           
           full_result = HansardReference.lookup("HC Deb 18 July 1982 vol 28 cc58-9w")
-          full_result.must_equal(false)
+          full_result.must_be_instance_of(HansardReference)
+          full_result.match_type.must_equal("not stored")
+          full_result.house.must_equal("Commons")
+          full_result.column.must_equal("58w")
         end
       end
       

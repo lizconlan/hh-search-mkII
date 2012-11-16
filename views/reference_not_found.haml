@@ -1,0 +1,30 @@
+%p
+  Here's how we interpreted the reference:
+%ul
+  %li
+    %span House:
+    = @reference.house
+  %li
+    %span Date:
+    = @reference.date_to_s
+  - if @reference.volume
+    %li
+      %span Volume:
+      = @reference.volume
+  - if @reference.column
+    %li
+      %span Start column:
+      = @reference.column
+  -if @reference.sitting_type
+    %li
+      %span Type:
+      = @reference.sitting_type
+
+%p
+  Either we don't have that Hansard in our database, or there is no Hansard that matches the reference:
+%ul
+  %li
+    = @query
+%p
+  Try browsing our
+  %a{:href => "#{PARENT_URL}/sittings/#{@reference.year}"}= "sittings in #{@reference.year}"

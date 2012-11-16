@@ -3,7 +3,7 @@
 require './models/section'
 
 class HansardReference
-  attr_reader :house, :date, :column, :end_column, :url, :match_type, :sitting_type
+  attr_reader :house, :date, :column, :end_column, :url, :match_type, :sitting_type, :volume
   
   MONTHS = Date::MONTHNAMES[1..12]
   SHORT_MONTHS = Date::ABBR_MONTHNAMES[1..12]
@@ -31,7 +31,7 @@ class HansardReference
   COLUMN_NUMBER_PATTERN = / (c?c) (\d)/
 
   def self.lookup(text)
-    house = date = column = end_column = sitting_type = nil
+    house = date = column = end_column = sitting_type = volume = nil
     url = ""
     text = text.tr('.,','')
     unless REFERENCE_PATTERN.match(text)
@@ -50,16 +50,20 @@ class HansardReference
     date = self.find_date(text)
     return false unless date.is_a?(Date)
     
+    if match = VOLUME_PATTERN.match(text)
+      volume = match[1]
+    end
+    
     if COLUMN_NUMBER_PATTERN.match(text)
       column, end_column = self.find_columns(text)
     elsif COLUMN_PATTERN.match(text)
       column, end_column = self.find_columns(text)
     else
+      url = "/sittings/#{date.year}/#{SHORT_MONTHS[date.month-1].downcase}/#{date.day}"
       if Section.where(:date => date).limit(1).empty?
-        return false
+        return HansardReference.new({:match_type => "not stored", :date => date, :volume => volume, :house => house})
       else
-        url = "/sittings/#{date.year}/#{SHORT_MONTHS[date.month-1].downcase}/#{date.day}"
-        return HansardReference.new({:url => url, :match_type => "partial"})
+        return HansardReference.new({:url => url, :match_type => "partial", :date => date, :volume => volume, :house => house})
       end
     end
     
@@ -86,9 +90,13 @@ class HansardReference
     
     if ref
       url = construct_url(house, date, ref.slug, column, sitting_type)
-      HansardReference.new({:sitting_type => sitting_type, :match_type => "full", :url => url, :house => house})
+      HansardReference.new({:sitting_type => sitting_type, :match_type => "full", :url => url, :house => house, :date => date, :volume => volume, :column => column_with_suffix(house, column, sitting_type)})
     else
-      return false
+      if Section.where(:date => date).limit(1).empty?
+        return HansardReference.new({:sitting_type => sitting_type, :match_type => "not stored",  :house => house, :date => date, :volume => volume, :column => column_with_suffix(house, column, sitting_type)})
+      else
+        return false
+      end
     end
   end
   
@@ -97,6 +105,9 @@ class HansardReference
     @match_type = attributes[:match_type] if attributes[:match_type]
     @sitting_type = attributes[:sitting_type] if attributes[:sitting_type]
     @house = attributes[:house] if attributes[:house]
+    @date = attributes[:date] if attributes[:date]
+    @volume = attributes[:volume] if attributes[:volume]
+    @column = attributes[:column] if attributes[:column]
   end
   
   def year
@@ -114,22 +125,28 @@ class HansardReference
       url_date = "#{date.year}/#{SHORT_MONTHS[date.month-1].downcase}/#{date.day.to_s.rjust(2, "0")}"
       case sitting_type
       when "Commons sitting", "Lords sitting"
-        "/#{house.downcase()}/#{url_date}/#{slug}#column_#{start_column}"
+        "/#{house.downcase()}/#{url_date}/#{slug}#column_#{column_with_suffix(house, start_column, sitting_type)}"
+      else
+        "/#{sitting_type.downcase.gsub(" ", "_")}/#{url_date}/#{slug}#column_#{column_with_suffix(house, start_column, sitting_type)}"
+      end
+    end
+    
+    def self.column_with_suffix(house, column, sitting_type)
+      case sitting_type
+      when /sitting/, "Lords reports"
+        column
       when "Written Answers"
         if house == "Commons"
-          "/written_answers/#{url_date}/#{slug}#column_#{start_column}w"
+          "#{column}w"
         else
-          "/written_answers/#{url_date}/#{slug}#column_#{start_column}wa"
+          "#{column}wa"
         end
       when "Grand Committee report"
-        "/grand_committee_report/#{url_date}/#{slug}#column_#{start_column}gc"
+        "#{column}gc"
       when "Westminster Hall"
-        "/westminster_hall/#{url_date}/#{slug}#column_#{start_column}wh"
+        "#{column}wh"
       when "Written Statements"
-        "/written_statements/#{url_date}/#{slug}#column_#{start_column}ws"
-      when "Lords reports"
-        "/lords_reports/#{url_date}/#{slug}#column_#{start_column}"
-      else ""
+        "#{column}ws"
       end
     end
     

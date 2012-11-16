@@ -76,7 +76,7 @@ end
 
 require './models/person'
 require './models/search_result'
-#require './models/hansard_reference'
+require './models/hansard_reference'
 
 require './models/timeline.rb'
 
@@ -93,12 +93,25 @@ end
 
 post "/" do
   query = params[:query]
-  redirect "/#{query}"
+  redirect "/#{CGI::escape(query)}"
 end
 
 get "/:query" do
-  do_search
-  haml(:"search")
+  @reference = HansardReference.lookup(CGI::unescape(params[:query]))
+  if @reference
+    @query = Sanitize.clean(CGI::unescape(params[:query]))
+    if @reference.match_type == "not stored"
+      @page_title = 'Hansard not found'
+      haml(:reference_not_found)
+    elsif @reference.match_type == "partial"
+      #meh
+    else
+      redirect "#{PARENT_URL}#{reference.url}"
+    end
+  else
+    do_search
+    haml(:search)
+  end
 end
 
 def do_search  
@@ -106,8 +119,6 @@ def do_search
   @query = Sanitize.clean(@query)
     
   if @query
-    #reference = HansardReference.create_from(@query)
-    
     @page_title = "Search: #{@query}"
     
     @people = Person.where("name like ?", "%#{@query}%").order("lastname, name").limit(5)
