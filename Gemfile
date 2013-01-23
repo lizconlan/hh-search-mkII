@@ -1,13 +1,13 @@
 source "http://rubygems.org"
 
+gem 'activerecord', '2.3.15'
 gem 'sinatra'
 gem 'rack', '1.4.1'
-gem 'mysql'
-gem 'activerecord', '3.2.8'
+gem 'mysql', '2.8.1'
 gem 'sanitize'
-gem 'rest-client', '1.6.7'
 gem 'json', '1.5.4'
 gem 'haml', '3.1.4'
+gem 'acts_as_solr', '1.3.3'
 
 group :development do
   gem 'shotgun'
