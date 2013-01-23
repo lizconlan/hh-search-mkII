@@ -3,11 +3,20 @@ require 'haml'
 require 'active_record'
 require 'sanitize'
 require 'date'
+require './lib/date_extension.rb'
 
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
 PARENT_URL = "http://hansard.millbanksystems.com"
+RAILS_ROOT = File.dirname(__FILE__)
 
-helpers do
+LAST_DATE = Date.new(2005, 12, 31)
+FIRST_DATE = Date.new(1803, 1, 1)
+DEFAULT_FEEDS = [10, 100, 200]
+
+dbconfig = YAML::load(File.open 'config/database.yml')
+ActiveRecord::Base.establish_connection(dbconfig)
+
+helpers do  
   def querystring_builder(option={})
     remove = ""
     page = params[:page]
@@ -75,17 +84,11 @@ helpers do
 end
 
 require './models/person'
-require './models/search_result'
 require './models/hansard_reference'
-
-require './models/timeline.rb'
+require './models/contribution'
 
 require './lib/search'
-
-before do
-  dbconfig = YAML::load(File.open 'config/database.yml')
-  ActiveRecord::Base.establish_connection(dbconfig)
-end
+require './lib/date_parser.rb'
 
 get "/" do
   haml(:"search_help")
@@ -116,82 +119,44 @@ get "/:query" do
   end
 end
 
+def get_search_params params
+  options = {}
+  sort_options = ['date', 'reverse_date']
+  param_keys = [:query, :speaker, :century, :decade, :year, :month, :day, :sort, :type, :all_speaker_filters]
+  param_keys.each{ |key| options[key] = params[key] }
+  options[:page] = params[:page].to_i if !params[:page].blank?
+  options[:century] = nil unless /C\d\d/.match options[:century]
+  options[:decade] = nil unless /\d\d\d\ds/.match options[:decade]
+  options[:year] = nil unless /\d\d\d\d/.match options[:year]
+  options[:month] = nil unless /\d\d\d\d-\d\d?/.match options[:month]
+  options[:day] = nil unless /\d\d\d\d-\d\d?-\d\d?/.match options[:day]
+  options[:sort] = nil unless sort_options.include? options[:sort]
+  return options
+end
+
+def get_search_results
+  success = false
+  begin
+    @search.get_results
+    success = true
+  rescue SearchException => e
+    logger.error "Solr error: #{e.to_s}"
+  end
+  return success
+end
+
 def do_search
+  options = get_search_params(params)
+  
   @query = CGI::unescape(params[:query])
   @query = Sanitize.clean(@query)
     
   if @query
     @page_title = "Search: #{@query}"
     
-    @people = Person.where("name like ?", "%#{@query}%").order("lastname, name").limit(5)
-    @search = Search.new()
-    options = {}
-    timeline_options = {}
-    options[:type] = params[:type] if params[:type]
-    options[:speaker] = params[:speaker] if params[:speaker] and Person.find_by_slug(params[:speaker])
-    options[:sort] = params[:sort] if params[:sort]
+    @people = Person.find_partial_matches(@query)
     
-    options[:day] = params[:day] if params[:day] and /\d\d\d\d-\d\d?-\d\d?/.match params[:day]
-    if params[:month] and /\d\d\d\d-\d\d?/.match params[:month]
-      options[:month] = params[:month]
-      timeline_options = {:resolution => "month", :month => params[:month]}
-    end
-    if params[:year] and /\d\d\d\d/.match params[:year]
-      options[:year] = params[:year]
-      timeline_options = {:resolution => "year", :year => params[:year]}
-    end
-    if params[:decade] and /\d\d\d\ds/.match params[:decade]
-      options[:decade] = params[:decade]
-      timeline_options = {:resolution => "decade", :decade => params[:decade]}
-    end
-    if params[:century] and /C\d\d/.match params[:century]
-      options[:century] = params[:century]
-      timeline_options = {:resolution => "century", :century => params[:century]}
-    end
-    
-    @search.search(@query, params[:page], options)
-    
-    if @search.results_found == 0
-      @page_title = "Search: no results for '#{@query}'"
-    end
-    
-    @filters = []
-    if params[:speaker]
-      if (person = Person.find_by_slug(params[:speaker]))
-        @filters << ["#{person.honorific} #{person.name}", "speaker"]
-      end 
-    end
-    
-    if params[:type]
-      @filters << [params[:type], "type"]
-    end
-    
-    if timeline_options[:resolution]
-      info = timeline_options[:"#{timeline_options[:resolution]}"]
-      label = ""
-      if info.include?("-")
-        parts = info.split("-")
-        if parts[1]
-          label = "#{Date::MONTHNAMES[parts[1].to_i]} #{parts[0]}"
-        end
-      elsif info =~ /C(\d+)/
-        label = "#{Timeline.number_to_ordinal($1)} century"
-      else
-        label = info
-      end
-      @filters << [label, timeline_options[:resolution]]
-    elsif options[:day]
-      date = Date.parse(options[:day])
-      @filters << ["#{date.day} #{Date::MONTHNAMES[date.month]} #{date.year}", "day"]
-    end
-    
-    unless !filtered_by_date? and @search.results_found == 0 or options[:day]
-      @timeline = Timeline.new(@search.date_facets, timeline_options)
-    end
+    @search = Search.new(options)
+    success = get_search_results
   end
-end
-
-def format_name(uid)
-  parts = uid.split("|")
-  name = parts[1]
 end

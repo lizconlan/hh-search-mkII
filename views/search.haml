@@ -1,22 +1,16 @@
-- if @search.search_results
+- if @search.results
   - if @people and !@people.empty? and params[:speaker] == nil
     =haml(:"_people", :locals => {:people => @people})
   -if @timeline
     =haml(:"timeline/_timeline", :locals => {:timeline => @timeline})
-  - unless @filters.empty?
+  - unless @filters.nil? or @filters.empty?
     =haml(:"_filters")
   - if @date_match
     %div#sitting-date-matches
       Jump to: 
       %a{:href => "#{PARENT_URL}/sittings/#{@date_match.date.year}/#{@date_match.date.month}/#{@date_match.date.day}"}= "Sitting of #{@date_match.date_to_s}"
-  - unless @search.speaker_facets.empty? or @filters.join("|").include?("|speaker")
-    %ol#by-member-facet
-      Show only contributions by:
-      - @search.speaker_facets[0..4].each do |uid, facet_count|
-        %li
-          - slug, name = uid.split("|")
-          %a{:href => "#{querystring_builder({"speaker"=>slug})}"}= "#{name} (#{facet_count})"
-  - if @search.results_found < 1
+
+  - if @search.results_size < 1
     =haml(:"_no_results")
   - else
     %div#search-results
@@ -35,17 +29,19 @@
           Sort by MOST RELEVANT
         - else
           %a{:href=>"#{querystring_builder({"sort"=>nil})}"} Sort by MOST RELEVANT
-    %h3#results-header
-      - if @search.results_found < 11
-        - if @search.results_found == 1
-          1 result
+      %h3#results-header
+        - if @search.results_size < 11
+          - if @search.results_size == 1
+            1 result
+          - else
+            = "#{@search.results_size} results"
         - else
-          = "#{@search.results_end} results"
-      - else
-        = "Results #{@search.results_start} to #{@search.results_end} of #{@search.results_found}"
-    - @search.search_results.each do |result_line|
-      =haml(:"_result", :locals => {:result => result_line}, :layout => false)
-    -if @search.last_page > 1
+          = "Results #{@search.first_result} to #{@search.last_result} of #{@search.results_size}"
+            
+    - @search.results.each do |result_line|
+      =haml(:"_result", :locals => {:result => result_line, :highlight => @search.highlights[result_line.id].join(" ")}, :layout => false)
+      
+    -if @search.results_size > @search.num_per_page
       %div.pagination
         %div.pagination
           =haml(:"_pagination")

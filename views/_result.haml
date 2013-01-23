@@ -1,11 +1,12 @@
 %div.search-result
   %h4.result-title
-    %a{:href => "#{PARENT_URL}/#{result.url}"}= result.subject
+    %a{:href => "#{PARENT_URL}/#{result.url}"}= result.sitting_title
+  
   -if result.speaker_slug
     %cite
       %a{:href => "#{querystring_builder({"speaker"=>result.speaker_slug})}", :title => "Show only results from #{result.speaker_name}"}= result.speaker_name
   %div.date
-    %a{:href => "#{querystring_builder({"type"=>result.sitting_type})}", :title => "Show only results from #{result.sitting_type}"}= result.sitting_type
+    %a{:href => "#{querystring_builder({"type"=>result.display_sitting_type})}", :title => "Show only results from #{result.display_sitting_type}"}= result.display_sitting_type
     = "- #{result.date.strftime("%B %d, %Y")}"
   %blockquote.search-result-fragment
-    =result.highlight_text
+    =highlight
