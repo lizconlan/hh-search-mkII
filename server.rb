@@ -3,7 +3,7 @@ require 'haml'
 require 'active_record'
 require 'sanitize'
 require 'date'
-require './lib/date_extension.rb'
+require './lib/present_on_date/date_extension.rb'
 
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
 PARENT_URL = "http://hansard.millbanksystems.com"
