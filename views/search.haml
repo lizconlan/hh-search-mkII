@@ -10,6 +10,15 @@
       Jump to: 
       %a{:href => "#{PARENT_URL}/sittings/#{@date_match.date.year}/#{@date_match.date.month}/#{@date_match.date.day}"}= "Sitting of #{@date_match.date_to_s}"
 
+  - if @search.any_facets?
+    - @query = @search.query
+    - if @search.display_speaker_facets.size > 1
+      %ol#by-member-facet
+        Show only contributions by: 
+        - @search.display_speaker_facets.each do |speaker, times|
+          %li
+            %a{:href => "#{querystring_builder({"speaker" => speaker.slug})}"}= "#{speaker.name} (#{times})"
+
   - if @search.results_size < 1
     =haml(:"_no_results")
   - else
