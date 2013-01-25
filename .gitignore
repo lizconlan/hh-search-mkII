@@ -1,0 +1,7 @@
+solr/logs
+solr/solr/data
+solr/solr/tmp
+solr/solr/*.tmp
+log
+coverage
+config/*.yml
