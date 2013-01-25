@@ -26,7 +26,7 @@ class Contribution < ActiveRecord::Base
   end
   
   def speaker_name
-    person.name if person
+    "#{person.honorific} #{person.name}" if person
   end
     
   def house
