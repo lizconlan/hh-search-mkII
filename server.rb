@@ -158,9 +158,6 @@ def do_search
     
   if @query
     @page_title = "Search: #{@query}"
-    
-    @people = Person.find_partial_matches(@query)
-    
     @search = Search.new(options)
     success = get_search_results
   end
