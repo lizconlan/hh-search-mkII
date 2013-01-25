@@ -1,6 +1,6 @@
 - if @search.results
-  - if @people and !@people.empty? and params[:speaker] == nil
-    =haml(:"_people", :locals => {:people => @people})
+  - if @search.speaker_matches and !@search.speaker_matches.empty? and params[:speaker] == nil
+    =haml(:"_people", :locals => {:people => @search.speaker_matches})
   -if @timeline
     =haml(:"timeline/_timeline", :locals => {:timeline => @timeline})
   - unless @filters.nil? or @filters.empty?
@@ -17,7 +17,7 @@
         Show only contributions by: 
         - @search.display_speaker_facets.each do |speaker, times|
           %li
-            %a{:href => "#{querystring_builder({"speaker" => speaker.slug})}"}= "#{speaker.name} (#{times})"
+            %a{:href => "#{querystring_builder({"speaker" => speaker.slug})}"}= "#{speaker.honorific} #{speaker.name} (#{times})"
 
   - if @search.results_size < 1
     =haml(:"_no_results")
