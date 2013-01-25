@@ -9,4 +9,4 @@
     %a{:href => "#{querystring_builder({"type"=>result.display_sitting_type})}", :title => "Show only results from #{result.display_sitting_type}"}= result.display_sitting_type
     = "- #{result.date.strftime("%B %d, %Y")}"
   %blockquote.search-result-fragment
-    =highlight.gsub(/^:|,|;|-|\.\)\] /, "")
+    =highlight.gsub(/^[:,;\-\.\)\]\?!\%] /, "")
