@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'acts_as_solr'
+require './lib/acts_as_solr_hacks/search_results.rb'
 
 class Contribution < ActiveRecord::Base
   acts_as_solr :fields => [:solr_text, {:person_id => :facet},
