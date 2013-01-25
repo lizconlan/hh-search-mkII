@@ -5,9 +5,14 @@ require 'sanitize'
 require 'date'
 require './lib/present_on_date/date_extension.rb'
 
+set :logging, true
+
+@logger = Logger.new('log/app.log')
+
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
 PARENT_URL = "http://hansard.millbanksystems.com"
 RAILS_ROOT = File.dirname(__FILE__)
+RAILS_DEFAULT_LOGGER = @logger
 
 LAST_DATE = Date.new(2005, 12, 31)
 FIRST_DATE = Date.new(1803, 1, 1)
@@ -140,7 +145,7 @@ def get_search_results
     @search.get_results
     success = true
   rescue SearchException => e
-    logger.error "Solr error: #{e.to_s}"
+    @logger.error "Solr error: #{e.to_s}"
   end
   return success
 end

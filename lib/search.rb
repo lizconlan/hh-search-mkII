@@ -205,18 +205,18 @@ class Search
   protected
   
     def get_query_results
-      #RAILS_DEFAULT_LOGGER.info 'getting result set'
+      RAILS_DEFAULT_LOGGER.info 'getting result set'
       begin
-        #RAILS_DEFAULT_LOGGER.info "search: '#{search_string}', options: #{search_options}"
+        RAILS_DEFAULT_LOGGER.info "search: '#{search_string}', options: #{search_options}"
         result_set = Contribution.find_by_solr(search_string, search_options)
       rescue Exception => e
         raise SearchException, e.to_s 
       end
-      #RAILS_DEFAULT_LOGGER.info 'got result set'
+      RAILS_DEFAULT_LOGGER.info 'got result set'
       self.results_size = result_set.total_hits
-      #RAILS_DEFAULT_LOGGER.info 'getting highlights'
+      RAILS_DEFAULT_LOGGER.info 'getting highlights'
       self.highlights = query_highlights(result_set)
-      #RAILS_DEFAULT_LOGGER.info 'got highlights'
+      RAILS_DEFAULT_LOGGER.info 'got highlights'
       self.speaker_facets = create_speaker_facets(result_set)
       if display_all_speakers
         self.display_speaker_facets = speaker_facets
@@ -238,7 +238,7 @@ class Search
     end
 
     def create_date_facets(result_set)
-      #RAILS_DEFAULT_LOGGER.info 'create_date_facets start'
+      RAILS_DEFAULT_LOGGER.info 'create_date_facets start'
       date_facets = get_facets(result_set, "date_facet")
       return {} unless date_facets
       facet_hash = {}
@@ -254,12 +254,12 @@ class Search
         most_common_century = century_hash.sort{|a,b| b[1]<=>a[1]}.first.first
         self.timeline_anchor = Date.first_of_century(most_common_century)
       end
-      #RAILS_DEFAULT_LOGGER.info 'create_date_facets end'
+      RAILS_DEFAULT_LOGGER.info 'create_date_facets end'
       return facet_hash
     end
     
     def create_speaker_facets(result_set)
-      #RAILS_DEFAULT_LOGGER.info 'create_speaker_facets start'
+      RAILS_DEFAULT_LOGGER.info 'create_speaker_facets start'
       speaker_facets = get_facets(result_set, "person_id_facet")
       return [] unless speaker_facets
       speaker_facets = speaker_facets.select{ |speaker, count| count > 1 }
@@ -269,27 +269,27 @@ class Search
       speakers = Person.find(display_speaker_ids)
       display_speaker_hash = Hash[*speakers.map{|speaker| [speaker.id, speaker]}.flatten]
       speaker_facets[0...display_count].each{ |item| item[0] = display_speaker_hash[item[0].to_i] }
-      #RAILS_DEFAULT_LOGGER.info 'create_speaker_facets end'
+      RAILS_DEFAULT_LOGGER.info 'create_speaker_facets end'
       speaker_facets 
     end
     
     def create_sitting_type_facets(result_set)
-      #RAILS_DEFAULT_LOGGER.info 'create_sitting_type_facets start'
+      RAILS_DEFAULT_LOGGER.info 'create_sitting_type_facets start'
       sitting_type_facets = get_facets(result_set, "sitting_type_facet")
       return [] unless sitting_type_facets
       sitting_type_facets = sort_by_reverse_value(sitting_type_facets)
       sitting_type_facets = sitting_type_facets.sort do |a,b|
         [b[1], a[0]] <=> [a[1], b[0]]
       end.collect
-      #_LOGGER.info 'create_sitting_type_facets end'
+      RAILS_DEFAULT_LOGGER.info 'create_sitting_type_facets end'
       return sitting_type_facets
     end
   
     def query_highlights(result_set)
       highlights = {}
       begin
-        return highlights if result_set.as_json["solr_data"][:highlights].empty?
-        result_set.as_json["solr_data"][:highlights].each_pair{ |id, value| highlights[id] = value["solr"]}
+        return highlights unless result_set.highlights
+        result_set.highlights.each_pair{ |id, value| highlights[id] = value["solr"]}
         return highlights
       rescue
         return {}
