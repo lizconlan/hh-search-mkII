@@ -19,9 +19,13 @@
           %li
             %a{:href => "#{querystring_builder({"speaker" => speaker.slug})}"}= "#{speaker.honorific} #{speaker.name} (#{times})"
   
-  - if @search.speaker
-    ="Showing only: #{@search.speaker.honorific} #{@search.speaker.name}"
-    %a{:href=>"#{querystring_builder({"speaker"=>nil})}"} ×
+  - unless @search.filters.empty?
+    Showing only:
+    - @search.filters.each do |filter|
+      %span.filter
+        -filter_text, filter_param = show_filter(filter, @search)
+        =filter_text
+        %a{:href => "#{querystring_builder({filter_param => nil})}"} &times;
 
   - if @search.results_size < 1
     =haml(:"_no_results")
