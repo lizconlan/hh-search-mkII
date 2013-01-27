@@ -179,7 +179,7 @@ class Search
   end
     
   def any_facets?
-    (display_speaker_facets.size > 1 or sitting_type_facets.size > 1)
+    (display_speaker_facets.to_a.size > 1 or sitting_type_facets.to_a.size > 1)
   end
   
   def offset
