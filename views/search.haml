@@ -18,6 +18,10 @@
         - @search.display_speaker_facets.each do |speaker, times|
           %li
             %a{:href => "#{querystring_builder({"speaker" => speaker.slug})}"}= "#{speaker.honorific} #{speaker.name} (#{times})"
+  
+  - if @search.speaker
+    ="Showing only: #{@search.speaker.honorific} #{@search.speaker.name}"
+    %a{:href=>"#{querystring_builder({"speaker"=>nil})}"} ×
 
   - if @search.results_size < 1
     =haml(:"_no_results")
