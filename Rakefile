@@ -11,7 +11,7 @@ end
 
 require 'net/http'
 require 'active_record'
-require_relative "./solr/configure/environment.rb"
+require "./solr/configure/environment.rb"
 
 namespace :solr do
 
