@@ -60,10 +60,10 @@ class HansardReference
       column, end_column = self.find_columns(text)
     else
       url = "/sittings/#{date.year}/#{SHORT_MONTHS[date.month-1].downcase}/#{date.day}"
-      if Section.where(:date => date).limit(1).empty?
-        return HansardReference.new({:match_type => "not stored", :date => date, :volume => volume, :house => house})
-      else
+      if Section.find_by_date(date, {:limit => 1})
         return HansardReference.new({:url => url, :match_type => "partial", :date => date, :volume => volume, :house => house})
+      else
+        return HansardReference.new({:match_type => "not stored", :date => date, :volume => volume, :house => house})
       end
     end
     
@@ -92,10 +92,10 @@ class HansardReference
       url = construct_url(house, date, ref.slug, column, sitting_type)
       HansardReference.new({:sitting_type => sitting_type, :match_type => "full", :url => url, :house => house, :date => date, :volume => volume, :column => column_with_suffix(house, column, sitting_type)})
     else
-      if Section.where(:date => date).limit(1).empty?
-        return HansardReference.new({:sitting_type => sitting_type, :match_type => "not stored",  :house => house, :date => date, :volume => volume, :column => column_with_suffix(house, column, sitting_type)})
-      else
+      if Section.find_by_date(date, {:limit => 1})
         return false
+      else
+        return HansardReference.new({:sitting_type => sitting_type, :match_type => "not stored",  :house => house, :date => date, :volume => volume, :column => column_with_suffix(house, column, sitting_type)})
       end
     end
   end
@@ -194,13 +194,15 @@ class HansardReference
     
     def self.find_matching_section(date, sitting_type, start_column, end_column)
       if end_column
-        Section.where("date = ? and sitting_type = ? and start_column <= ? and end_column >= ?", date, sitting_type, start_column, end_column).order("start_column DESC").limit(1).first
+        Section.find_by_date_and_sitting_type(date, sitting_type, {:conditions => "start_column <= #{start_column} and end_column >= #{end_column}", :order => "start_column DESC", :limit => 1})
       else
-        sections = Section.where("date = ? and sitting_type = ? and start_column <= ? and end_column >= ?", date, sitting_type, start_column, start_column)
-        if sections.count > 1 and sections.first.section_type =~ /Group/
+        sections = Section.find_by_date_and_sitting_type(date, sitting_type, {:conditions => "start_column = #{start_column}"})
+        if sections.is_a?(Section)
+          sections
+        elsif sections.nil?
+          nil
+        elsif sections.count > 1 and sections.first.section_type =~ /Group/
           sections[1]
-        else
-          sections[0]
         end
       end
     end
