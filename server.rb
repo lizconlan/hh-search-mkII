@@ -180,7 +180,7 @@ def get_search_results
     @search.get_results
     success = true
   rescue SearchException => e
-    @logger.error "Solr error: #{e.to_s}"
+    RAILS_DEFAULT_LOGGER.error "Solr error: #{e.to_s}"
   end
   return success
 end
