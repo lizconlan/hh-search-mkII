@@ -155,7 +155,7 @@ get "/:query" do
   
   if !@reference or @reference.match_type == "partial"
     do_search
-    @page_title = "Search: no results for '#{@query}'" if @search.results_size < 1
+    @page_title = "Search: no results for '#{@query}'" if @search and @search.results_size < 1
     haml(:search)
   end
 end
