@@ -12,7 +12,7 @@ class DateParser
       end
       return nil unless match
       return nil if date_in_future? match
-      return nil if Sitting.find_in_resolution(date_from_params(match), match[:resolution]).empty?
+      return nil unless Section.find_by_date(date_from_params(match))
       return match
     end
   end
