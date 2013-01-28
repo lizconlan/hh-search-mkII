@@ -1,6 +1,8 @@
 solr/logs
-solr/tmp
-solr/solr/data
+solr/tmp/*pid
+solr/solr/data/development
+solr/solr/data/production
+solr/solr/data/test
 solr/solr/tmp
 solr/solr/*.tmp
 log
