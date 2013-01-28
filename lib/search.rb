@@ -18,7 +18,6 @@ class Search
     date_value = time_interval(options)
     set_interval(date_value) if date_value
     create_search_string
-    #check_for_hansard_reference
     find_matches
   end
   
