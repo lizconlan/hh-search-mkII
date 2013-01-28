@@ -1,4 +1,5 @@
 solr/logs
+solr/tmp
 solr/solr/data
 solr/solr/tmp
 solr/solr/*.tmp
