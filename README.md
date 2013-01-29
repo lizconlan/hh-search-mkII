@@ -14,6 +14,24 @@ Lots of code being recycled from the original Hansard project, will try to make 
 
 Very much a work in progress - currently somewhere between a train wreck and a cargo cult, approach with caution and don't expect the tests to pass (yet).
 
+## Features
+
+* Full text search
+* Highlighting
+* Faceting on:
+  * speaker name
+  * sitting type (e.g. "Commons Sitting", "Lords Sitting", "Written Answers")
+  * date (not surfaceable yet - nothing to click on)
+* Sorting
+
+Data searched:
+
+* contribution text
+* dates
+* Hansard references
+* member names
+
+
 ## Notes
 
 * Start and stop solr using the rake tasks (if stuck, kill the process and start again)
