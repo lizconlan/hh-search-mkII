@@ -14,6 +14,8 @@ Lots of code being recycled from the original Hansard project, will try to make 
 
 Very much a work in progress - currently somewhere between a train wreck and a cargo cult, approach with caution and don't expect the tests to pass (yet).
 
+I've been asked to get something working ASAP so this is being rushed (excuse, sticking to it).
+
 ## Features
 
 * Full text search
@@ -25,7 +27,6 @@ Very much a work in progress - currently somewhere between a train wreck and a c
 * Sorting
 
 Data searched:
-
 * contribution text
 * dates
 * Hansard references
