@@ -194,16 +194,21 @@ class HansardReference
     
     def self.find_matching_section(date, sitting_type, start_column, end_column)
       if end_column
-        Section.find_by_date_and_sitting_type(date, sitting_type, {:conditions => "start_column <= #{start_column} and end_column >= #{end_column}", :order => "start_column DESC", :limit => 1})
+        sections = Section.find_all_by_date_and_sitting_type(date, sitting_type, {:conditions => "start_column <= #{start_column} and end_column >= #{end_column}", :order => "start_column DESC", :limit => 1})
       else
-        sections = Section.find_by_date_and_sitting_type(date, sitting_type, {:conditions => "start_column = #{start_column}"})
-        if sections.is_a?(Section)
-          sections
-        elsif sections.nil?
-          nil
-        elsif sections.count > 1 and sections.first.section_type =~ /Group/
-          sections[1]
+        sections = Section.find_all_by_date_and_sitting_type(date, sitting_type, {:conditions => "(start_column < #{start_column} and end_column >= #{start_column}) or start_column = #{start_column}", :order => "end_column, id"})
+      end
+      if sections.nil? or sections.empty?
+        nil
+      elsif sections.count > 1
+        sift = sections.dup.delete_if{ |x| x.section_type =~ /Group/}
+        unless sift.empty?
+          sift.first
+        else
+          sections.first
         end
+      else
+        sections.first
       end
     end
     
