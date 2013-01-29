@@ -26,11 +26,11 @@ I've been asked to get something working ASAP so this is being rushed (excuse, s
   * date (not surfaceable yet - nothing to click on)
 * Sorting
 
-Data searched:
-* contribution text
-* dates
-* Hansard references
-* member names
+### Data searched:
+* contribution text (solr index)
+* dates (database)
+* Hansard references (database)
+* member names (database)
 
 
 ## Notes
