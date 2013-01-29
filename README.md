@@ -28,7 +28,7 @@ I've been asked to get something working ASAP so this is being rushed (excuse, s
 
 ### Data searched:
 * contribution text (solr index)
-* dates (database)
+* sitting dates (database)
 * Hansard references (database)
 * member names (database)
 
