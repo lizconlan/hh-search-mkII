@@ -21,42 +21,7 @@ DEFAULT_FEEDS = [10, 100, 200]
 dbconfig = YAML::load(File.open 'config/database.yml')
 ActiveRecord::Base.establish_connection(dbconfig)
 
-helpers do
-  def show_filter(filter, search)
-    filter_text = ''
-    param = nil
-    if filter.is_a? Date
-      filter_text = format_date(filter, search.resolution)
-      param = search.resolution.to_s
-    elsif filter.is_a? Person
-      filter_text = filter.name
-      param = "speaker"
-    else
-      filter_text = filter
-      param = 'type'
-    end
-    return [filter_text, param]
-  end
-  
-  def month_string date, options={}
-    options[:brief] ? "#{month_abbr(date.month).titleize}." : Date::MONTHNAMES[date.month]
-  end
-  
-  def format_date(date, resolution, options={})
-    case resolution
-      when :decade
-        "#{date.decade_string}"
-      when :year
-        "#{date.year}"
-      when :month
-        "#{month_string(date,options)} #{date.year}"
-      when :day
-        "#{date.day} #{month_string(date,options)} #{date.year}"
-      else
-        "#{date.century_ordinal} century"
-    end
-  end
-  
+helpers do  
   def querystring_builder(option={})
     remove = ""
     page = params[:page]
