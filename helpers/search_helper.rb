@@ -25,7 +25,7 @@ module SearchHelper
   
   def search_timeline(search)
     resolution = Date.higher_resolution(search.resolution)
-    return if (resolution.nil?) or (search.date_facets.empty? and !search.date_filter?)
+    return if (resolution.nil?) or (search.date_facets.nil?) or (search.date_facets.empty? and !search.date_filter?)
     options = timeline_options(resolution, "").merge(:top_label => "Results by decade")
     timeline = timeline(timeline_date(search), resolution, options) do |start_date, end_date|
       search.date_facets
