@@ -20,10 +20,11 @@ I've been asked to get something working ASAP so this is being rushed (excuse, s
 
 * Full text search
 * Highlighting
+* Timeline/histogram view
 * Faceting on:
   * speaker name
   * sitting type (e.g. "Commons Sitting", "Lords Sitting", "Written Answers")
-  * date (not surfaceable yet - nothing to click on)
+  * date
 * Sorting
 
 ### Data searched:
