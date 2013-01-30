@@ -4,9 +4,10 @@ require 'active_record'
 require 'sanitize'
 require 'date'
 require './lib/present_on_date/date_extension.rb'
+require './helpers/search_helper.rb'
 
 set :logging, true
-
+ 
 @logger = Logger.new('log/app.log')
 
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
@@ -21,7 +22,35 @@ DEFAULT_FEEDS = [10, 100, 200]
 dbconfig = YAML::load(File.open 'config/database.yml')
 ActiveRecord::Base.establish_connection(dbconfig)
 
-helpers do  
+helpers do
+  include SearchHelper
+  
+  def timeline_options(resolution, sitting_type)
+    options = { :upper_nav_limit => LAST_DATE,
+                :lower_nav_limit => FIRST_DATE,
+                :first_of_month => false,
+                :navigation => true,
+                :sitting_type => sitting_type }
+    options
+  end
+  
+  def params_without(to_remove)
+    param_hash = params
+    if to_remove.is_a? Array
+      to_remove.each do |key|
+        param_hash = remove_key(key, param_hash)
+      end
+    else
+      param_hash = remove_key(to_remove, param_hash)
+    end
+    param_hash
+  end
+
+  def remove_key(key, hash)
+    key = key.to_s
+    hash.reject{|k,v| k==key}
+  end
+  
   def querystring_builder(option={})
     remove = ""
     page = params[:page]
@@ -121,6 +150,7 @@ get "/:query" do
   if !@reference or @reference.match_type == "partial"
     do_search
     @page_title = "Search: no results for '#{@query}'" if @search and @search.results_size < 1
+    @timeline = search_timeline(@search)
     haml(:search)
   end
 end
