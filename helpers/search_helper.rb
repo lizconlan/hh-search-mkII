@@ -39,7 +39,13 @@ module SearchHelper
   
   def timeline_link(label, interval, options, resolution, html_options={})
     resolution = "century" if resolution.nil?
-    %|<a href="#{querystring_builder(resolution => interval.to_s.gsub("_", "-"))}" title="Results for '#{@query}' #{interval_suffix(resolution, label, interval)}">#{label}</a>|
+    option_attribs = ""
+    unless html_options.empty?
+      html_options.keys.each do |attrib|
+        option_attribs = %Q|#{option_attribs} #{attrib}="#{html_options[attrib]}"|
+      end
+    end
+    %|<a href="#{querystring_builder(resolution => interval.to_s.gsub("_", "-"))}" title="Results for '#{@query}' #{interval_suffix(resolution, label, interval)}"#{option_attribs}>#{label}</a>|
   end
 
   def timeline_url(interval, options, resolution)
@@ -49,7 +55,7 @@ module SearchHelper
   
   def interval_suffix(resolution, label, interval)
     case resolution
-      when nil
+      when nil, "century"
         ": #{label}"
       when :decade
         "in the #{label}" 
