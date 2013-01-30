@@ -1,7 +1,8 @@
+# adapted from: https://github.com/millbanksystems/hansard/blob/master/vendor/plugins/present_on_date/lib/present_on_date_timeline_helper.rb
+
 require 'date'
 
 module PresentOnDateTimelineHelper
-
   # dates index
   # on decade   -> show 100 years in decades
   # on year     -> show 10 years  (lets you jump years)
@@ -33,7 +34,7 @@ module PresentOnDateTimelineHelper
       else; day.century_string   
     end
   end
-
+  
   def link_for interval, resolution, counts, options
     label = label_for interval, resolution
     if counts.sum > 0
@@ -55,9 +56,9 @@ module PresentOnDateTimelineHelper
           end
         end
       end
-
+      
       divider = max / 40.0
-
+      
       intervals.each do |interval|
         buckets = interval[1]
         buckets.each_index do |i|
@@ -67,10 +68,10 @@ module PresentOnDateTimelineHelper
           end
         end
       end
-
+      
       intervals
     end
-
+    
     def get_intervals date, day_counts, resolution, options
       intervals = seed_intervals date, resolution, options
       first, last = date.get_interval_delimiters(resolution, options)
@@ -97,7 +98,7 @@ module PresentOnDateTimelineHelper
       end
       intervals
     end
-
+    
     def seed_intervals date, resolution, options
       intervals = {}
       stepsize = 1
@@ -110,7 +111,7 @@ module PresentOnDateTimelineHelper
       end
       intervals
     end
-
+    
     def bucket_index day, resolution
       case resolution
         when :day;   0
@@ -119,7 +120,7 @@ module PresentOnDateTimelineHelper
         else         (day.month - 1) / 2
       end
     end
-
+    
     def bucket_size resolution
       case resolution
         when :day;    1
@@ -128,7 +129,7 @@ module PresentOnDateTimelineHelper
         else          6
       end
     end
-
+    
     def initialize_bucket day, intervals, resolution
       case resolution
         when :day;   day.first_and_last_of_month.first
@@ -136,8 +137,8 @@ module PresentOnDateTimelineHelper
         else         intervals << [day.year, Array.new(6) {|i| 0}] unless (intervals.assoc day.year)
       end
     end
-
-
+    
+    
     def label_for interval, resolution
       case resolution
         when :day
@@ -156,7 +157,7 @@ module PresentOnDateTimelineHelper
       end
       label
     end
-
+    
     def day_date_params(interval, options)
       year = interval.year.to_s
       month = Date::ABBR_MONTHNAMES[interval.month]
@@ -184,38 +185,38 @@ module PresentOnDateTimelineHelper
     
     def date_params(interval, options, resolution)
       case resolution
-        when :day 
+        when :day
           day_date_params(interval, options)
         when :month
           month_date_params(interval, options)
         when :year
           year_date_params(interval, options)
         when :decade
-          decade_date_params(interval, options)        
+          decade_date_params(interval, options)
         else
-          century_date_params(interval, options)    
+          century_date_params(interval, options)
       end
     end
     
     def year_from_interval interval
       interval.split('_')[0]
     end
-
+    
     def month_from_interval interval
       month = interval.split('_')[1]
       Date::ABBR_MONTHNAMES[month.to_i].capitalize
     end
-
+    
     def date_css interval, resolution
       'timeline_date'
     end
-
+    
     def block_css interval, resolution
       'timeline_block'
     end
-
+    
     def lower_resolution_link(date, resolution, options)
-      return '' unless resolution        
+      return '' unless resolution
       lower_resolution = Date.lower_resolution(resolution)
       options[:default_label] = options[:top_label]
       interval, label = nav_link_label_and_interval(date, lower_resolution, options)
@@ -230,7 +231,7 @@ module PresentOnDateTimelineHelper
       if options[:upper_nav_limit] and end_date > options[:upper_nav_limit]
         label
       else
-        nav_link(label, interval, resolution, options, :rel => "next nofollow") 
+        nav_link(label, interval, resolution, options, :rel => "next nofollow")
       end
     end
     
@@ -242,7 +243,7 @@ module PresentOnDateTimelineHelper
       if options[:lower_nav_limit] and start_date < options[:lower_nav_limit]
         label
       else
-        nav_link(label, interval, resolution, options, :rel => "prev nofollow") 
+        nav_link(label, interval, resolution, options, :rel => "prev nofollow")
       end
     end
     
@@ -253,7 +254,7 @@ module PresentOnDateTimelineHelper
     end
     
     def nav_link(label, interval, resolution, options, html_options)
-      timeline_link(label, interval, options, resolution, html_options) 
+      timeline_link(label, interval, options, resolution, html_options)
     end
     
     def timeline_label(date, intervals, resolution, options)
@@ -280,7 +281,7 @@ module PresentOnDateTimelineHelper
     def timeline_html date, intervals, resolution, options
       next_link = ''
       previous_link = ''
-      current_page_resolution = Date.lower_resolution(resolution)        
+      current_page_resolution = Date.lower_resolution(resolution)
      
       if options[:navigation] 
         up_link = lower_resolution_link(date, current_page_resolution, options)
@@ -301,7 +302,6 @@ module PresentOnDateTimelineHelper
       <td align="center" class="timeline_nav">
       #{previous_link}
       </td>]
-
       
       intervals.each do |interval, counts|
         if counts.sum > 0
@@ -335,12 +335,12 @@ module PresentOnDateTimelineHelper
     <tr class="timeline-caption-row">
       <td>
       </td>]
-
+      
       intervals.each do |interval, counts|
         timeline += %Q[
       <td class="#{date_css interval, resolution}" valign="top">#{link_for interval, resolution, counts, options }</td>]
       end
-
+      
       timeline += %Q[
       <td>
       </td>
@@ -355,4 +355,5 @@ module PresentOnDateTimelineHelper
   </table>]
       timeline
     end
+    
 end

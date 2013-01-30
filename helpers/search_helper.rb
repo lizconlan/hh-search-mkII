@@ -1,3 +1,5 @@
+# adapted from: https://github.com/millbanksystems/hansard/blob/master/app/helpers/search_helper.rb
+
 require './helpers/present_on_date_timeline_helper'
 
 module SearchHelper
@@ -45,9 +47,9 @@ module SearchHelper
         option_attribs = %Q|#{option_attribs} #{attrib}="#{html_options[attrib]}"|
       end
     end
-    %|<a href="#{querystring_builder(resolution => interval.to_s.gsub("_", "-"))}" title="Results for '#{@query}' #{interval_suffix(resolution, label, interval)}"#{option_attribs}>#{label}</a>|
+    %|<a href="#{timeline_url(interval, options, resolution)}" title="Results for '#{@query}' #{interval_suffix(resolution, label, interval)}"#{option_attribs}>#{label}</a>|
   end
-
+  
   def timeline_url(interval, options, resolution)
     resolution = "century" if resolution.nil?
     querystring_builder(resolution => interval.to_s.gsub("_", "-"))

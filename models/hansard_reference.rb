@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+# adapted from: https://github.com/millbanksystems/hansard/blob/master/app/models/hansard_reference.rb
+
 require './models/section'
 
 class HansardReference

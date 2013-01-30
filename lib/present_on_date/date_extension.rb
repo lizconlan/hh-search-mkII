@@ -1,12 +1,12 @@
+# copied from: https://github.com/millbanksystems/hansard/blob/master/vendor/plugins/present_on_date/lib/date_extension.rb
+
 # Adds has_material? method to date instances and material_dates_in_interval to
 # Date class
 class Date
-
-
   def material_dates_upto(end_date)
     all_material_dates_upto(end_date).uniq.sort
   end
-
+  
   def material_dates_count_upto(end_date)
     dates = all_material_dates_upto(end_date)
     
@@ -16,7 +16,7 @@ class Date
       counts
     end
   end
-
+  
   def has_material?
     material = false
     Date.active_record_models.each do |model|
@@ -29,7 +29,7 @@ class Date
     end
     material
   end
-
+  
   def models_present
     models = []
     Date.active_record_models.each do |model|
@@ -41,7 +41,7 @@ class Date
     end
     models
   end
-
+  
   def first_and_last_of_month
     first = Date.civil(self.year, self.month, 1)
     if self.month == 12
@@ -138,22 +138,22 @@ class Date
   def decade
     ((year/10)*10)
   end
-
+  
   def Date.year_from_century_string century_string
     century_to_year(century_string[1..2].to_i)
   end
-
+  
   def Date.first_of_century(century)
      Date.new(century_to_year(century))
   end
-
+  
   def Date.century_to_year(century)
     ((century - 1).to_s + "00").to_i
   end
    
+   
+  private
     
-  private  
-
     def Date.resolutions
       [:decade, :year, :month, :day]
     end
@@ -164,7 +164,7 @@ class Date
       end
       Object.subclasses_of(ActiveRecord::Base).select {|o| o.superclass == ActiveRecord::Base }
     end
-
+    
     def all_material_dates_upto(end_date)
       dates = []
       Date.active_record_models.each do |model|

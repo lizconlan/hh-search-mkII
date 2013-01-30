@@ -1,3 +1,5 @@
+# copied from: https://github.com/millbanksystems/hansard/blob/master/lib/date_parser.rb
+
 class DateParser
 
   def self.date_match query
