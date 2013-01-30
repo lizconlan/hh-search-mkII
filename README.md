@@ -2,11 +2,11 @@
 
 ## Overview
 
-An attempt at making a search for the flat-file Historic Hansard based on the salvaged search index and data culled from the original database. Borrows heavily from [the original code for the Historic Hansard project](https://github.com/millbanksystems/hansard) written by [Louise Crow](https://github.com/crowbot), [Rob McKinnon](https://github.com/robmckinnon) and [Robert Brook](https://github.com/robertbrook) (with occasional interference from me) back in 2007; attribution for this has been given inline wherever possible as I haven't been able to work out how to automagically get Git to do this for me.
+An attempt at making a search for the flat-file Historic Hansard based on the salvaged search index and data culled from the original database. Although it's evolved from the initial attempt, it owes more to [the original code for the Historic Hansard project](https://github.com/millbanksystems/hansard) written by [Louise Crow](https://github.com/crowbot), [Rob McKinnon](https://github.com/robmckinnon) and [Robert Brook](https://github.com/robertbrook) (with occasional interference from me) back in 2007, from which it borrows heavily. Attribution for cross-project reuse has been stated inline wherever possible as I haven't been able to work out how to automagically get Git to do this for me.
 
 ## MkII?
 
-Yeah, the first one didn't go so well - the idea was sound (well, I think so) but creating a whole new index was more time-consuming than I'd thought possible so my thoughts have turned to recycling.
+Yeah, the first one didn't go so well - the idea was sound (well, I thought so) but creating a whole new index was more time-consuming than I'd thought possible so my thoughts have turned to recycling.
 
 ## Features
 
