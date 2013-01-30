@@ -77,7 +77,7 @@ module SearchHelper
       filter_text = format_date(filter, search.resolution)
       param = search.resolution.to_s
     elsif filter.is_a? Person
-      filter_text = filter.name
+      filter_text = "#{filter.honorific} #{filter.name}"
       param = "speaker"
     else
       filter_text = filter
