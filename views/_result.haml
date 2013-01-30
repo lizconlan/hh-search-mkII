@@ -7,6 +7,6 @@
       %a{:href => "#{querystring_builder({"speaker"=>result.speaker_slug})}", :title => "Show only results from #{result.speaker_name}"}= result.speaker_name
   %div.date
     %a{:href => "#{querystring_builder({"type"=>result.display_sitting_type})}", :title => "Show only results from #{result.display_sitting_type}"}= result.display_sitting_type
-    = "- #{result.date.strftime("%B %d, %Y")}"
+    = "&mdash; #{result.date.strftime("%B %-d, %Y")}"
   %blockquote.search-result-fragment
     =highlight.gsub(/^[:,;\-\.\)\]\?!\%] /, "")
