@@ -2,22 +2,13 @@
   - if @search.speaker_matches and !@search.speaker_matches.empty? and params[:speaker] == nil
     =haml(:"_people", :locals => {:people => @search.speaker_matches})
   -if @timeline
-    =haml(:"timeline/_timeline", :locals => {:timeline => @timeline})
+    =@timeline
   - unless @filters.nil? or @filters.empty?
     =haml(:"_filters")
   - if @search.date_match
     %div#sitting-date-matches
       Jump to: 
       %a{:href => "#{PARENT_URL}/sittings/#{@search.date_match[:year]}/#{@search.date_match[:month]}/#{@search.date_match[:day]}"}= "Sitting of #{@search.date_match[:day]} #{@search.date_match[:month].capitalize} #{@search.date_match[:year]}"
-
-  - if @search.any_facets?
-    - @query = @search.query
-    - if @search.display_speaker_facets.size > 1
-      %ol#by-member-facet
-        Show only contributions by: 
-        - @search.display_speaker_facets.each do |speaker, times|
-          %li
-            %a{:href => "#{querystring_builder({"speaker" => speaker.slug})}"}= "#{speaker.honorific} #{speaker.name} (#{times})"
   
   - unless @search.filters.empty?
     Showing only:
@@ -26,6 +17,15 @@
         -filter_text, filter_param = show_filter(filter, @search)
         =filter_text
         %a{:href => "#{querystring_builder({filter_param => nil})}"} &times;
+        
+  - if @search.any_facets?
+    - @query = @search.query
+    - if @search.display_speaker_facets.size > 1
+      %ol#by-member-facet
+        Show only contributions by: 
+        - @search.display_speaker_facets.each do |speaker, times|
+          %li
+            %a{:href => "#{querystring_builder({"speaker" => speaker.slug})}"}= "#{speaker.honorific} #{speaker.name} (#{times})"
 
   - if @search.results_size < 1
     =haml(:"_no_results")
