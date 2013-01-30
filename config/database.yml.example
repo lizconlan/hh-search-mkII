@@ -3,3 +3,4 @@ database:  hh_search_app
 username: 
 password: 
 socket: /tmp/mysql.sock
+reconnect: true
