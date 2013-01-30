@@ -43,14 +43,6 @@ module PresentOnDateTimelineHelper
     end
   end
   
-  def timeline_link(label, interval, options, resolution, html_options)
-    link_to(label, timeline_url(interval, options, resolution), html_options)
-  end
-  
-  def timeline_url(interval, options, resolution)
-    on_date_url(date_params(interval, options, resolution))
-  end
-  
   private
     
     def scale intervals
