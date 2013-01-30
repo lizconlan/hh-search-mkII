@@ -1,3 +1,5 @@
+# adapted from: https://github.com/millbanksystems/hansard/blob/master/app/models/search.rb
+
 require 'sanitize'
 
 class SearchException < Exception
@@ -39,19 +41,19 @@ class Search
   end
   
   def find_matches
-    self.speaker_matches = Person.find_partial_matches(query, limit=5) 
+    self.speaker_matches = Person.find_partial_matches(query, limit=5)
     self.date_match = DateParser.date_match(query)
   end
   
   def check_for_hansard_reference
-    self.hansard_reference = HansardReference.create_from(query) 
+    self.hansard_reference = HansardReference.create_from(query)
   end
   
   def create_search_string
-    self.search_string = text_search 
-    self.search_string += speech_search if speaker 
+    self.search_string = text_search
+    self.search_string += speech_search if speaker
     self.search_string += type_search if sitting_type
-    self.search_string += interval_query_search if resolution    
+    self.search_string += interval_query_search if resolution
   end
   
   def text_search
@@ -61,12 +63,12 @@ class Search
   def type_search
     " AND sitting_type:\"#{sitting_type}\""
   end
-
+  
   def speech_search
     " AND person_id:\"#{speaker.id}\""
   end
   
-  def interval_query_search 
+  def interval_query_search
     " AND date:[#{start_date} TO #{end_date}]"
   end
   
@@ -78,14 +80,14 @@ class Search
       end
     end
   end
-    
+  
   def set_interval(value)
     case self.resolution
-    when :century 
+    when :century
       self.start_date, self.end_date = century_start_end(value)
-    when :decade 
+    when :decade
       self.start_date, self.end_date = decade_start_end(value)
-    when :year 
+    when :year
       self.start_date, self.end_date = year_start_end(value)
     when :month
       self.start_date, self.end_date = month_start_end(value)
@@ -113,7 +115,7 @@ class Search
                       :require_field_match => false,
                       :fragsize => 200 } }
   end
-
+  
   def highlight_prefix
     "<em>"
   end
@@ -124,15 +126,15 @@ class Search
   
   def sort_options
     case sort
-      when  'date'
-       { :order => 'date asc' }
-      when 'reverse_date'
-       { :order => 'date desc'}
-      else
-        {}
-      end
+    when 'date'
+     { :order => 'date asc' }
+    when 'reverse_date'
+     { :order => 'date desc'}
+    else
+      {}
+    end
   end
-
+  
   def facet_options
     { :facets => { :fields => [:person_id, :date, :sitting_type],
                    :zeros => false } }
@@ -143,17 +145,17 @@ class Search
     date = Date.new(start_year)
     date.first_and_last_of_century
   end
-    
+  
   def decade_start_end(decade)
     start_year = decade.to_i
     return Date.new(start_year,1,1), Date.new(start_year+9,12,31)
   end
-
+  
   def year_start_end(year)
     year = year.to_i
     return Date.new(year,1,1), Date.new(year,12,31)
   end
-
+  
   def month_start_end(year_month)
     year = year_month.split('-')[0].to_i
     month = year_month.split('-')[1].to_i
@@ -176,7 +178,7 @@ class Search
   def date_filter?
     (start_date and resolution) ? true : false
   end
-    
+  
   def any_facets?
     (display_speaker_facets.to_a.size > 1 or sitting_type_facets.to_a.size > 1)
   end
@@ -202,14 +204,14 @@ class Search
   end
   
   protected
-  
+    
     def get_query_results
       RAILS_DEFAULT_LOGGER.info 'getting result set'
       begin
         RAILS_DEFAULT_LOGGER.info "search: '#{search_string}', options: #{search_options}"
         result_set = Contribution.find_by_solr(search_string, search_options)
       rescue Exception => e
-        raise SearchException, e.to_s 
+        raise SearchException, e.to_s
       end
       RAILS_DEFAULT_LOGGER.info 'got result set'
       self.results_size = result_set.total_hits
@@ -219,14 +221,14 @@ class Search
       self.speaker_facets = create_speaker_facets(result_set)
       if display_all_speakers
         self.display_speaker_facets = speaker_facets
-      else  
-        self.display_speaker_facets = speaker_facets.slice(0, speakers_to_display) 
+      else
+        self.display_speaker_facets = speaker_facets.slice(0, speakers_to_display)
       end
       self.date_facets = create_date_facets(result_set)
       self.sitting_type_facets = create_sitting_type_facets(result_set)
       result_set.results
     end
-
+    
     def get_facets(result_set, facet_name)
       return result_set.facets["facet_fields"][facet_name] if result_set.facets &&
       !result_set.facets["facet_fields"].nil? &&
@@ -235,7 +237,7 @@ class Search
       !result_set.facets["facet_fields"][facet_name].empty?
       return nil
     end
-
+    
     def create_date_facets(result_set)
       RAILS_DEFAULT_LOGGER.info 'create_date_facets start'
       date_facets = get_facets(result_set, "date_facet")
@@ -243,9 +245,9 @@ class Search
       facet_hash = {}
       highest_count = 0
       century_hash = Hash.new(0)
-      date_facets.each do |date, count| 
+      date_facets.each do |date, count|
         date = Date.strptime(date)
-        facet_hash[date] = count 
+        facet_hash[date] = count
         century_hash[date.century] += count
       end
       
@@ -262,14 +264,14 @@ class Search
       speaker_facets = get_facets(result_set, "person_id_facet")
       return [] unless speaker_facets
       speaker_facets = speaker_facets.select{ |speaker, count| count > 1 }
-      speaker_facets = speaker_facets.sort{ |a,b| b[1] <=> a[1] } 
-      display_count = display_all_speakers ? speaker_facets.size : speakers_to_display      
+      speaker_facets = speaker_facets.sort{ |a,b| b[1] <=> a[1] }
+      display_count = display_all_speakers ? speaker_facets.size : speakers_to_display
       display_speaker_ids = speaker_facets[0...display_count].map{ |item| item[0] }
       speakers = Person.find(display_speaker_ids)
       display_speaker_hash = Hash[*speakers.map{|speaker| [speaker.id, speaker]}.flatten]
       speaker_facets[0...display_count].each{ |item| item[0] = display_speaker_hash[item[0].to_i] }
       RAILS_DEFAULT_LOGGER.info 'create_speaker_facets end'
-      speaker_facets 
+      speaker_facets
     end
     
     def create_sitting_type_facets(result_set)
@@ -283,7 +285,7 @@ class Search
       RAILS_DEFAULT_LOGGER.info 'create_sitting_type_facets end'
       return sitting_type_facets
     end
-  
+    
     def query_highlights(result_set)
       highlights = {}
       begin
@@ -294,9 +296,9 @@ class Search
         return {}
       end
     end
-  
+    
     def sort_by_reverse_value(hash)
-      # sorts by score from high to low 
+      # sorts by score from high to low
       array = hash.to_a
       array = array.sort{ |a,b| [b[1]] <=> [a[1]] }.collect
     end
