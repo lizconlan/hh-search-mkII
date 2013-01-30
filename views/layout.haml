@@ -15,7 +15,7 @@
         %input{:size => "24", :title => "Access key: S", :accesskey => "s", :name => "query", :id => "search-query", :type => "search", :placeholder => "Search Hansard", :autosave => "hansard.millbanksystems.com", :results => "10", :value => params[:query]}
         %input{:type => "submit", :value => "Search"}
       %div#nav
-        %a{:href => "#{PARENT_URL}/", :id => "home", :rel => "home"} HANSARD 1803-2005
+        %a{:href => "#{PARENT_URL}/", :id => "home", :rel => "home"} HANSARD 1803&ndash;2005
       %h1.title&= @page_title || "Search"
     %div.page{:id => "content"}
       =yield
