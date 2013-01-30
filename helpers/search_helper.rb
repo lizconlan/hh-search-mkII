@@ -44,9 +44,8 @@ module SearchHelper
 
   def timeline_url(interval, options, resolution)
     link_params = params_without_date_and_page_filters(resolution)
-    add_date_filter(link_params, resolution, interval)
-    #url_for link_params
-    "link_params!"
+    resolution = "century" if resolution.nil?
+    %|<a href="#{querystring_builder(resolution => interval.to_s.gsub("_", "-"))}">#{label}</a>|
   end
   
   def atom_url
