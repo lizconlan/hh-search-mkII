@@ -11,6 +11,11 @@ class PersonTest < MiniTest::Spec
           result.must_equal([])
         end
         
+        it "should return an empty array if given a blank string" do
+          result = Person.find_partial_matches("")
+          result.must_equal([])
+        end
+        
         it "should default to returning 5 results" do
           result = Person.find_partial_matches("Smith")
           result.size.must_equal(5)
@@ -39,10 +44,38 @@ class PersonTest < MiniTest::Spec
           result.size.must_equal(5)
           result[1].lastname.must_equal("Bickford-Smith")
           
+          result = Person.find_partial_matches("Cusack-Smith")
+          result.first.name.must_equal("Thomas Cusack-Smith")
+          result.size.must_equal(5)
+          
           result = Person.find_partial_matches("Bickford-Smith")
           result.first.name.must_equal("William Bickford-Smith")
           result[1].lastname.must_equal("Buchanan-Smith")
           result.size.must_equal(5)
+        end
+        
+        it "should find a double-barrelled surname correctly if a first name is supplied" do
+          result = Person.find_partial_matches("Iain Duncan Smith")
+          result[0].name.must_equal("Iain Duncan Smith")
+          
+          result = Person.find_partial_matches("Thomas Cusack-Smith")
+          result[0].name.must_equal("Thomas Cusack-Smith")
+        end
+        
+        #it's a like search so anything longer than this will probably 
+        #be picked up by the "3 or more" code anyway...
+        it "should cope with triple-barrelled names" do
+          result = Person.find_partial_matches("Home-Drummond-Moray")
+          result[0].name.must_equal("Henry Home-Drummond-Moray")
+          
+          result = Person.find_partial_matches("Henry Home-Drummond-Moray")
+          result[0].name.must_equal("Henry Home-Drummond-Moray")
+        end
+        
+        #...but we'll check just in case (thanks Wikipedia!)
+        it "should manage to find Richard Temple-Nugent-Brydges-Chandos-Grenville" do
+          result = Person.find_partial_matches("Richard Temple-Nugent-Brydges-Chandos-Grenville")
+          result[0].name.must_equal("Richard Temple-Nugent-Brydges-Chandos-Grenville")
         end
         
         it "should use the last part of the name as a fallback option" do

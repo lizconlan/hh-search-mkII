@@ -5,17 +5,35 @@
 class Person < ActiveRecord::Base
   
   def self.find_partial_matches(partial, limit=5)
+    return [] if partial.strip.blank?
+    
     conditions = ""
+    lastname = ""
     results = do_partial_search(partial, limit)
     
     secondary_limit = limit - results.size
     
     namelist = partial.split(/-| /)
-    if secondary_limit <= limit and namelist.size > 1
-      lastname = namelist.last
-      id_list = results.map{ |x| x.id }.join(",")
-      conditions = " AND ID not in (#{id_list})" unless id_list.empty?
-      results += do_partial_search(lastname, secondary_limit, conditions)
+    while secondary_limit > 0
+      if namelist.size > 3 and lastname.split(/-| /).size != 3 and lastname.split(/-| /).size !=2
+        chars = partial.scan(/-| /)
+        lastname = "#{namelist[-3]}#{chars[-2]}#{namelist[-2]}#{chars.last}#{namelist.last}"
+        id_list = results.map{ |x| x.id }.join(",")
+        conditions = " AND ID not in (#{id_list})" unless id_list.empty?
+        results += do_partial_search(lastname, secondary_limit, conditions)
+      elsif namelist.size > 2 and lastname.split(/-| /).size != 2
+        chars = partial.scan(/-| /)
+        lastname = "#{namelist[-2]}#{chars.last}#{namelist.last}"
+        id_list = results.map{ |x| x.id }.join(",")
+        conditions = " AND ID not in (#{id_list})" unless id_list.empty?
+        results += do_partial_search(lastname, secondary_limit, conditions)
+      else
+        lastname = namelist.last
+        id_list = results.map{ |x| x.id }.join(",")
+        conditions = " AND ID not in (#{id_list})" unless id_list.empty?
+        results += do_partial_search(lastname, secondary_limit, conditions)
+        break
+      end
     end
     
     results
