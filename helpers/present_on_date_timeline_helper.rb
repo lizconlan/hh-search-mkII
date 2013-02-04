@@ -27,11 +27,11 @@ module PresentOnDateTimelineHelper
   
   def interval_key day, resolution
     case resolution
-      when :day;   day
-      when :month; day.year.to_s + '_' + day.month.to_s
-      when :year;  day.year
-      when :decade; day.decade_string 
-      else; day.century_string   
+    when :day;   day
+    when :month; day.year.to_s + '_' + day.month.to_s
+    when :year;  day.year
+    when :decade; day.decade_string 
+    else; day.century_string   
     end
   end
   
@@ -114,37 +114,37 @@ module PresentOnDateTimelineHelper
     
     def bucket_index day, resolution
       case resolution
-        when :day;   0
-        when :month; (day.day / 5) < 6 ? (day.day / 5) : 5
-        when :decade; (day.year.to_s.last.to_i) / 2
-        else         (day.month - 1) / 2
+      when :day;   0
+      when :month; (day.day / 5) < 6 ? (day.day / 5) : 5
+      when :decade; (day.year.to_s.last.to_i) / 2
+      else         (day.month - 1) / 2
       end
     end
     
     def bucket_size resolution
       case resolution
-        when :day;    1
-        when :month;  6
-        when :decade; 5
-        else          6
+      when :day;    1
+      when :month;  6
+      when :decade; 5
+      else          6
       end
     end
     
     def label_for interval, resolution
       case resolution
-        when :day
-          day = interval.day
-          label = (day == '1') ? month.capitalize + ' ' + day : day
-        when :month
-          month = interval.split('_')[1]
-          month = Date::ABBR_MONTHNAMES[month.to_i].capitalize
-          label = month
-        when :year
-          label = interval.to_s
-        when :decade
-          label = interval.to_s
-        else
-          label = "#{interval[1..2].to_i.ordinalize} century"
+      when :day
+        day = interval.day
+        label = (day == '1') ? month.capitalize + ' ' + day : day
+      when :month
+        month = interval.split('_')[1]
+        month = Date::ABBR_MONTHNAMES[month.to_i].capitalize
+        label = month
+      when :year
+        label = interval.to_s
+      when :decade
+        label = interval.to_s
+      else
+        label = "#{interval[1..2].to_i.ordinalize} century"
       end
       label
     end
@@ -215,16 +215,16 @@ module PresentOnDateTimelineHelper
         interval = intervals.first[0]
       end 
       label = case resolution
-        when :decade
-          "#{Date.new(interval.to_i).century_ordinal} century"
-        when :year
-          date.decade_string
-        when :month
-          year_from_interval interval
-        when :day
-          "#{Date::ABBR_MONTHNAMES[interval.month]} #{interval.year}"
-        else
-          ''
+      when :decade
+        "#{Date.new(interval.to_i).century_ordinal} century"
+      when :year
+        date.decade_string
+      when :month
+        year_from_interval interval
+      when :day
+        "#{Date::ABBR_MONTHNAMES[interval.month]} #{interval.year}"
+      else
+        ''
       end
       label
     end

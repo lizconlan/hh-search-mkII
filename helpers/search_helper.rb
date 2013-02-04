@@ -3,7 +3,6 @@
 require './helpers/present_on_date_timeline_helper'
 
 module SearchHelper
-  
   include PresentOnDateTimelineHelper
   
   def month_string date, options={}
@@ -12,16 +11,16 @@ module SearchHelper
 
   def format_date(date, resolution, options={})
     case resolution
-      when :decade
-        "#{date.decade_string}"
-      when :year
-        "#{date.year}"
-      when :month
-        "#{month_string(date,options)} #{date.year}"
-      when :day
-        "#{date.day} #{month_string(date,options)} #{date.year}"
-      else
-        "#{date.century_ordinal} century"
+    when :decade
+      "#{date.decade_string}"
+    when :year
+      "#{date.year}"
+    when :month
+      "#{month_string(date,options)} #{date.year}"
+    when :day
+      "#{date.day} #{month_string(date,options)} #{date.year}"
+    else
+      "#{date.century_ordinal} century"
     end
   end
   
@@ -57,18 +56,18 @@ module SearchHelper
   
   def interval_suffix(resolution, label, interval)
     case resolution
-      when nil, "century"
-        ": #{label}"
-      when :decade
-        "in the #{label}" 
-      when :year
-        "in #{label}"
-      when :month 
-        "in #{label}"
-      when :day
-        "on #{interval.to_s(:long)}"
-      else 
-        ''
+    when nil, "century"
+      ": #{label}"
+    when :decade
+      "in the #{label}" 
+    when :year
+      "in #{label}"
+    when :month 
+      "in #{label}"
+    when :day
+      "on #{interval.to_s(:long)}"
+    else 
+      ''
     end
   end
 
