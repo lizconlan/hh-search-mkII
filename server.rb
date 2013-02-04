@@ -34,23 +34,6 @@ helpers do
     options
   end
   
-  def params_without(to_remove)
-    param_hash = params
-    if to_remove.is_a? Array
-      to_remove.each do |key|
-        param_hash = remove_key(key, param_hash)
-      end
-    else
-      param_hash = remove_key(to_remove, param_hash)
-    end
-    param_hash
-  end
-
-  def remove_key(key, hash)
-    key = key.to_s
-    hash.reject{|k,v| k==key}
-  end
-  
   def querystring_builder(option={})
     remove = ""
     page = params[:page]
@@ -109,11 +92,6 @@ helpers do
     
     qstring = qs.join("&")
     qstring.empty? ? request.path_info : "?#{qstring}"
-  end
-
-  def filtered_by_date?
-    filter_fields = @filters ? @filters.map{ |_, value| value } : ""
-    filter_fields.include?("century") or filter_fields.include?("decade") or filter_fields.include?("year") or filter_fields.include?("month")
   end
 end
 
