@@ -1,6 +1,5 @@
 # adapted from: https://github.com/millbanksystems/hansard/blob/master/vendor/plugins/present_on_date/lib/date_extension.rb
 
-# Date class
 class Date
   def material_dates_count_upto(end_date)
     dates = all_material_dates_upto(end_date)
