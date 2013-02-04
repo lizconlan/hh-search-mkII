@@ -3,7 +3,7 @@ require 'haml'
 require 'active_record'
 require 'sanitize'
 require 'date'
-require './lib/present_on_date/date_extension.rb'
+require './lib/date_extension.rb'
 require './helpers/search_helper.rb'
 
 set :logging, true

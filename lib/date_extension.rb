@@ -1,12 +1,7 @@
-# copied from: https://github.com/millbanksystems/hansard/blob/master/vendor/plugins/present_on_date/lib/date_extension.rb
+# adapted from: https://github.com/millbanksystems/hansard/blob/master/vendor/plugins/present_on_date/lib/date_extension.rb
 
-# Adds has_material? method to date instances and material_dates_in_interval to
 # Date class
 class Date
-  def material_dates_upto(end_date)
-    all_material_dates_upto(end_date).uniq.sort
-  end
-  
   def material_dates_count_upto(end_date)
     dates = all_material_dates_upto(end_date)
     
@@ -15,31 +10,6 @@ class Date
       counts[d] = counts[d] + 1
       counts
     end
-  end
-  
-  def has_material?
-    material = false
-    Date.active_record_models.each do |model|
-      if model.respond_to? "present_on_date?".to_sym
-        if model.present_on_date? self
-          material = true
-          break
-        end
-      end
-    end
-    material
-  end
-  
-  def models_present
-    models = []
-    Date.active_record_models.each do |model|
-      if model.respond_to? "present_on_date?".to_sym
-        if model.present_on_date? self
-          models << model
-        end
-      end
-    end
-    models
   end
   
   def first_and_last_of_month

@@ -130,15 +130,6 @@ module PresentOnDateTimelineHelper
       end
     end
     
-    def initialize_bucket day, intervals, resolution
-      case resolution
-        when :day;   day.first_and_last_of_month.first
-        when :month; Date.new(day.year, 1, 1)
-        else         intervals << [day.year, Array.new(6) {|i| 0}] unless (intervals.assoc day.year)
-      end
-    end
-    
-    
     def label_for interval, resolution
       case resolution
         when :day
@@ -156,46 +147,6 @@ module PresentOnDateTimelineHelper
           label = "#{interval[1..2].to_i.ordinalize} century"
       end
       label
-    end
-    
-    def day_date_params(interval, options)
-      year = interval.year.to_s
-      month = Date::ABBR_MONTHNAMES[interval.month]
-      {:year => year, :month => month.downcase, :day => interval.day}
-    end
-    
-    def month_date_params(interval, options)
-      year = year_from_interval interval
-      month = month_from_interval interval
-      day_param = options[:first_of_month] ? 1 : nil
-      {:year => year, :month => month.downcase, :day => day_param}
-    end
-    
-    def year_date_params(interval, options)
-      {:year => interval.to_i}
-    end
-      
-    def decade_date_params(interval, options)
-      {:decade => interval}
-    end
-    
-    def century_date_params(interval, options)
-      {:century => interval}
-    end    
-    
-    def date_params(interval, options, resolution)
-      case resolution
-        when :day
-          day_date_params(interval, options)
-        when :month
-          month_date_params(interval, options)
-        when :year
-          year_date_params(interval, options)
-        when :decade
-          decade_date_params(interval, options)
-        else
-          century_date_params(interval, options)
-      end
     end
     
     def year_from_interval interval
