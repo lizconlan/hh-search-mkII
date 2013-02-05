@@ -28,5 +28,4 @@ Yeah, the first one didn't go so well - the idea was sound (well, I thought so) 
 ## Notes
 
 * Start and stop solr using the rake tasks (if stuck, kill the process and start again)
-* Works best with Ruby 1.9.x and Active Record 2.3.x (I know, go with it)
-* Limited to Active Record 2.3.x series because of acts_as_solr
+* Hacked to work with Ruby 1.9.x and ActiveRecord 3.2.x
