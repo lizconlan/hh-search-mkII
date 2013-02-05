@@ -7,6 +7,7 @@ end
 
 gem 'minitest'
 require 'minitest/autorun'
+require 'mocha/setup'
 require 'turn'
 
 require 'active_record'

@@ -8,7 +8,10 @@ GEM
     ansi (1.4.3)
     haml (3.1.4)
     json (1.5.4)
+    metaclass (0.0.1)
     minitest (4.5.0)
+    mocha (0.13.2)
+      metaclass (~> 0.0.1)
     multi_json (1.5.0)
     mysql (2.8.1)
     nokogiri (1.4.7)
@@ -41,6 +44,7 @@ DEPENDENCIES
   haml (= 3.1.4)
   json (= 1.5.4)
   minitest
+  mocha
   mysql (= 2.8.1)
   rack (= 1.4.1)
   redgreen

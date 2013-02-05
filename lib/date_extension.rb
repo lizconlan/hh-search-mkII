@@ -1,4 +1,6 @@
 # adapted from: https://github.com/millbanksystems/hansard/blob/master/vendor/plugins/present_on_date/lib/date_extension.rb
+require 'active_support/core_ext/integer/inflections'
+require 'active_support/dependencies'
 
 class Date
   def material_dates_count_upto(end_date)
@@ -128,10 +130,10 @@ class Date
     end
     
     def Date.active_record_models
-      Dir.glob("#{RAILS_ROOT}/app/models/**/*rb").each do |m|
-        Dependencies.require_or_load m
+      Dir.glob("#{RAILS_ROOT}/models/**/*rb").each do |m|
+        ActiveSupport::Dependencies.require_or_load m
       end
-      Object.subclasses_of(ActiveRecord::Base).select {|o| o.superclass == ActiveRecord::Base }
+      ActiveRecord::Base.descendants
     end
     
     def all_material_dates_upto(end_date)

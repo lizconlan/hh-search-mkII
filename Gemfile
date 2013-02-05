@@ -18,4 +18,5 @@ group :test do
   gem 'turn'
   gem 'redgreen'
   gem 'simplecov', '0.7.1'
+  gem "mocha", :require => false
 end
