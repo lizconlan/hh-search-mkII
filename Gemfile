@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem 'activerecord', '2.3.16'
+gem 'activerecord', '3.2.11'
 gem 'sinatra', '1.3.4'
 gem 'rack', '1.4.1'
 gem 'mysql', '2.8.1'

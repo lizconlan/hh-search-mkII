@@ -1,8 +1,10 @@
 require 'sinatra'
 require 'haml'
 require 'active_record'
+require './lib/active_record_monkeypatch.rb'
 require 'sanitize'
 require 'date'
+require 'logger'
 require './lib/date_extension.rb'
 require './helpers/search_helper.rb'
 
