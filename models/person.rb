@@ -9,6 +9,7 @@ class Person < ActiveRecord::Base
     
     conditions = ""
     lastname = ""
+    firstname = ""
     results = do_partial_search(partial, limit)
     
     secondary_limit = limit - results.size
@@ -27,6 +28,12 @@ class Person < ActiveRecord::Base
         id_list = results.map{ |x| x.id }.join(",")
         conditions = " AND ID not in (#{id_list})" unless id_list.empty?
         results += do_partial_search(lastname, secondary_limit, conditions)
+      elsif namelist.size > 1 and firstname.blank?
+        firstname = namelist.first
+        lastname = namelist.last
+        id_list = results.map{ |x| x.id }.join(",")
+        conditions = " AND ID not in (#{id_list})" unless id_list.empty?
+        results += do_partial_search_against_full_name_and_last_name(lastname, firstname, secondary_limit, conditions)
       else
         lastname = namelist.last
         id_list = results.map{ |x| x.id }.join(",")
@@ -42,12 +49,24 @@ class Person < ActiveRecord::Base
   private
     def self.do_partial_search(lastname, limit, exclusions="")
       find_options = { :conditions => [ "LOWER(lastname) LIKE ?", '%' + lastname.strip.downcase + '%' ],
-                       :order => "lastname ASC" }
+                       :order => "lastname ASC, full_name ASC" }
       unless exclusions.blank?
         find_options[:conditions][0] += exclusions
       end
       
       find_options[:limit] = limit if limit
       find(:all, find_options)
+    end
+    
+    def self.do_partial_search_against_full_name_and_last_name(lastname, firstname, limit, exclusions="")
+      find_options = { :conditions => [ "LOWER(lastname) LIKE ? AND LOWER(full_name) LIKE ?", '%' + lastname.strip.downcase + '%', firstname.strip.downcase + '%' ],
+                       :order => "lastname ASC, full_name ASC" }
+      unless exclusions.blank?
+        find_options[:conditions][0] += exclusions
+      end
+      
+      find_options[:limit] = limit if limit
+      find(:all, find_options)
+      
     end
 end

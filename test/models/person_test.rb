@@ -77,6 +77,12 @@ class PersonTest < MiniTest::Spec
           result[0].name.must_equal("Richard Temple-Nugent-Brydges-Chandos-Grenville")
         end
         
+        it "should attempt to use the first part of the name as a first name if other methods fail" do
+          result = Person.find_partial_matches("Ernest Armstrong") #watching too much House of Cards
+          result[0].name.must_equal("Ernest Armstrong")
+          result[1].name.must_equal("Andrew Armstrong")
+        end
+        
         it "should use the last part of the name as a fallback option" do
           result = Person.find_partial_matches("Betty Boothroyd")
           result.size.must_equal(1)
