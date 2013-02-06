@@ -2,8 +2,13 @@
 
 require 'acts_as_solr'
 require './lib/search_results.rb'
+require './lib/present_on_date.rb'
 
 class Contribution < ActiveRecord::Base
+  include PresentOnDate
+  
+  acts_as_present_on_date :date
+  
   acts_as_solr :fields => [:solr_text, {:person_id => :facet},
                                        {:date => :facet},
                                        {:year => :facet},

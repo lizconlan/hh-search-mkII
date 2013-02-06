@@ -13,6 +13,7 @@ class DateExtensionTest < MiniTest::Spec
     
     describe "when asked for material_dates_count_upto" do
       it "should check through all the ActiveRecord models to see if they have a present_dates_in_interval method" do
+        Contribution.must_respond_to(:present_dates_in_interval)
         Contribution.expects(:respond_to?).with(:present_dates_in_interval)
         Person.expects(:respond_to?).with(:present_dates_in_interval)
         Section.expects(:respond_to?).with(:present_dates_in_interval)
