@@ -49,7 +49,7 @@ class Person < ActiveRecord::Base
   private
     def self.do_partial_search(lastname, limit, exclusions="")
       find_options = { :conditions => [ "LOWER(lastname) LIKE ?", '%' + lastname.strip.downcase + '%' ],
-                       :order => "lastname ASC, full_name ASC" }
+                       :order => "lastname ASC, name ASC" }
       unless exclusions.blank?
         find_options[:conditions][0] += exclusions
       end
@@ -60,7 +60,7 @@ class Person < ActiveRecord::Base
     
     def self.do_partial_search_against_full_name_and_last_name(lastname, firstname, limit, exclusions="")
       find_options = { :conditions => [ "LOWER(lastname) LIKE ? AND LOWER(full_name) LIKE ?", '%' + lastname.strip.downcase + '%', '%' + firstname.strip.downcase + ' %' ],
-                       :order => "lastname ASC, full_name ASC" }
+                       :order => "lastname ASC, name ASC" }
       unless exclusions.blank?
         find_options[:conditions][0] += exclusions
       end
