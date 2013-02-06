@@ -90,6 +90,11 @@ class PersonTest < MiniTest::Spec
           # down as John Leslie Lloyd which is a good test that the sort order
           # make sense on screen
           result[1].name.must_equal("Anthony Lloyd")
+          
+          #And sometimes looking at the full_name makes no sense at all
+          # as per former PM Mr Anthony Charles Lynton Blair
+          result = Person.find_partial_matches("Tony Blair")
+          result[0].name.must_equal("Tony Blair")
         end
         
         it "should use the last part of the name as a fallback option" do

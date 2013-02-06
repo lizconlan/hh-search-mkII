@@ -33,7 +33,7 @@ class Person < ActiveRecord::Base
         lastname = namelist.last
         id_list = results.map{ |x| x.id }.join(",")
         conditions = " AND ID not in (#{id_list})" unless id_list.empty?
-        results += do_partial_search_against_full_name_and_last_name(lastname, firstname, secondary_limit, conditions)
+        results += do_partial_search_against_name_and_last_name(lastname, firstname, secondary_limit, conditions)
       else
         lastname = namelist.last
         id_list = results.map{ |x| x.id }.join(",")
@@ -58,8 +58,8 @@ class Person < ActiveRecord::Base
       find(:all, find_options)
     end
     
-    def self.do_partial_search_against_full_name_and_last_name(lastname, firstname, limit, exclusions="")
-      find_options = { :conditions => [ "LOWER(lastname) LIKE ? AND LOWER(full_name) LIKE ?", '%' + lastname.strip.downcase + '%', '%' + firstname.strip.downcase + ' %' ],
+    def self.do_partial_search_against_name_and_last_name(lastname, firstname, limit, exclusions="")
+      find_options = { :conditions => [ "LOWER(lastname) LIKE ? AND LOWER(name) LIKE ?", '%' + lastname.strip.downcase + '%', '%' + firstname.strip.downcase + ' %' ],
                        :order => "lastname ASC, name ASC" }
       unless exclusions.blank?
         find_options[:conditions][0] += exclusions
@@ -67,6 +67,5 @@ class Person < ActiveRecord::Base
       
       find_options[:limit] = limit if limit
       find(:all, find_options)
-      
     end
 end
