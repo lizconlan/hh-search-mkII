@@ -30,6 +30,11 @@ class ContributionTest < MiniTest::Spec
       it "should return an empty array for cols if no column data is stored" do
         test_contribution.cols.must_equal([])
       end
+      
+      it "should respond to the acts_as_present_on_date methods" do
+        Contribution.must_respond_to(:present_dates_in_interval)
+        test_contribution.must_respond_to(:present_on_date_find)
+      end
     end
     
     describe "when given a contribution with just a start column" do
