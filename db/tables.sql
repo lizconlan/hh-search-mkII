@@ -18,9 +18,7 @@ create table `people` (
   `full_name` varchar(255) NOT NULL,
   `lastname` varchar(128) NOT NULL,
   `slug` varchar(128) NULL,
-  PRIMARY KEY  (`id`),
-  INDEX `lastname_index` (`lastname`),
-  INDEX `full_name_index` (`full_name`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table `sections` (
