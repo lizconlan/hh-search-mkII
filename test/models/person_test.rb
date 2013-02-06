@@ -82,8 +82,13 @@ class PersonTest < MiniTest::Spec
           result[0].name.must_equal("Ernest Armstrong")
           result[1].name.must_equal("Andrew Armstrong")
           
+          #Selwyn Lloyd's full name is recorded as John Selwyn Brooke Lloyd so only looking
+          # at the start of the full_name didn't find him. Refining the technique
           result = Person.find_partial_matches("Selwyn Lloyd")
           result[0].name.must_equal("Selwyn Lloyd")
+          # ...and happily we have Anthony Lloyd (later Lord Lloyd of Berwick)
+          # down as John Leslie Lloyd which is a good test that the sort order
+          # make sense on screen
           result[1].name.must_equal("Anthony Lloyd")
         end
         
