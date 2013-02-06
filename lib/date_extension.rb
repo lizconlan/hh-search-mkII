@@ -130,7 +130,7 @@ class Date
     end
     
     def Date.active_record_models
-      Dir.glob("#{RAILS_ROOT}/models/**/*rb").each do |m|
+      Dir.glob("./../models/**/*rb").each do |m|
         ActiveSupport::Dependencies.require_or_load m
       end
       ActiveRecord::Base.descendants

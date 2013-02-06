@@ -4,8 +4,6 @@ require_relative '../../lib/date_extension.rb'
 require_relative '../../models/contribution.rb'
 require_relative '../../models/section.rb'
 
-RAILS_ROOT = File.dirname("..")
-
 class DateExtensionTest < MiniTest::Spec
   describe Date do
     test_date = Date.parse("2012-02-16")
