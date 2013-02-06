@@ -1,7 +1,7 @@
-require_relative 'minitest_helper.rb'
-require_relative '../models/contribution'
-require_relative '../models/section'
-require_relative '../models/person'
+require_relative '../minitest_helper.rb'
+require_relative '../../models/contribution'
+require_relative '../../models/section'
+require_relative '../../models/person'
 
 class MonkeypatchTest < MiniTest::Spec
   describe "MonkeyPatch" do

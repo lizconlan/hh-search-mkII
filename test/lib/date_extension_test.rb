@@ -1,9 +1,8 @@
-require 'active_record'
 require 'date'
-require_relative 'minitest_helper.rb'
-require_relative '../lib/date_extension.rb'
-require_relative '../models/contribution.rb'
-require_relative '../models/section.rb'
+require_relative '../minitest_helper.rb'
+require_relative '../../lib/date_extension.rb'
+require_relative '../../models/contribution.rb'
+require_relative '../../models/section.rb'
 
 RAILS_ROOT = File.dirname("..")
 
