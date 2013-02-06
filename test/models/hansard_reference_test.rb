@@ -1,6 +1,5 @@
-require 'active_record'
-require_relative 'minitest_helper.rb'
-require_relative '../models/hansard_reference.rb'
+require_relative '../minitest_helper.rb'
+require_relative '../../models/hansard_reference.rb'
 
 class HansardReferenceTest < MiniTest::Spec
   describe HansardReference do

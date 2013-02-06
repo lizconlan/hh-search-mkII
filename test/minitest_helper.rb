@@ -14,6 +14,7 @@ require 'mocha/setup'
 require 'turn'
 
 require 'active_record'
+require './lib/active_record_monkeypatch.rb'
 dbconfig = YAML::load(File.open 'config/database.yml')
 ActiveRecord::Base.establish_connection(dbconfig)
 

@@ -1,6 +1,5 @@
-require 'active_record'
-require_relative 'minitest_helper.rb'
-require_relative '../models/person.rb'
+require_relative '../minitest_helper.rb'
+require_relative '../../models/person.rb'
 
 class PersonTest < MiniTest::Spec
   describe Person do
