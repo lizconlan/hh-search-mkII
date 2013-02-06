@@ -5,6 +5,6 @@ solr/solr/data/production
 solr/solr/data/test
 solr/solr/tmp
 solr/solr/*.tmp
-log
+log/*.log
 coverage
 config/*.yml
