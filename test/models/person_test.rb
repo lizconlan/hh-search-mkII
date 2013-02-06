@@ -81,6 +81,9 @@ class PersonTest < MiniTest::Spec
           result = Person.find_partial_matches("Ernest Armstrong") #watching too much House of Cards
           result[0].name.must_equal("Ernest Armstrong")
           result[1].name.must_equal("Andrew Armstrong")
+          
+          result = Person.find_partial_matches("Selwyn Lloyd")
+          result[0].name.must_equal("Selwyn Lloyd")
         end
         
         it "should use the last part of the name as a fallback option" do
