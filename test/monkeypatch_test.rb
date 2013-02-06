@@ -1,5 +1,4 @@
 require_relative 'minitest_helper.rb'
-require_relative '../lib/active_record_monkeypatch.rb'
 require_relative '../models/contribution'
 require_relative '../models/section'
 require_relative '../models/person'
