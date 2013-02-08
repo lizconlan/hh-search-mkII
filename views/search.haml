@@ -32,20 +32,21 @@
   - else
     %div#search-results
       %div#sort-links
-        - if params[:sort] == "reverse_date"
-          Sort by MOST RECENT
-        - else
-          %a{:href=>"#{querystring_builder({"sort"=>"reverse_date"})}"} Sort by MOST RECENT
-        |
-        - if params[:sort] == "date"
-          Sort by EARLIEST
-        - else
-          %a{:href=>"#{querystring_builder({"sort"=>"date"})}"} Sort by EARLIEST
-        |
-        - unless params[:sort]
-          Sort by MOST RELEVANT
-        - else
-          %a{:href=>"#{querystring_builder({"sort"=>nil})}"} Sort by MOST RELEVANT
+        - if @search.results_size > 1
+          - if params[:sort] == "reverse_date"
+            Sort by MOST RECENT
+          - else
+            %a{:href=>"#{querystring_builder({"sort"=>"reverse_date"})}"} Sort by MOST RECENT
+          |
+          - if params[:sort] == "date"
+            Sort by EARLIEST
+          - else
+            %a{:href=>"#{querystring_builder({"sort"=>"date"})}"} Sort by EARLIEST
+          |
+          - unless params[:sort]
+            Sort by MOST RELEVANT
+          - else
+            %a{:href=>"#{querystring_builder({"sort"=>nil})}"} Sort by MOST RELEVANT
       %h3#results-header
         - if @search.results_size < 11
           - if @search.results_size == 1
