@@ -69,35 +69,35 @@ class HansardReferenceTest < MiniTest::Spec
           result.sitting_type.must_equal("Written Answers")
           result.url.must_equal("/written_answers/1980/jan/15/entry-clearance-waiting-times#column_85wa")
         end
-          
+        
         it "should correctly handle Grand Committee Reports" do
           result = HansardReference.lookup("HL Deb 12 November 1997 vol 583 cc1-52GC")
           result.house.must_equal("Lords")
           result.sitting_type.must_equal("Grand Committee report")
           result.url.must_equal("/grand_committee_report/1997/nov/12/official-report-of-the-grand-committee#column_1gc")
         end
-          
+        
         it "should correctly handle Westminster Hall debates" do
           result = HansardReference.lookup("HC Deb 18 July 2001 vol 372 cc112-8WH")
           result.house.must_equal("Commons")
           result.sitting_type.must_equal("Westminster Hall")
           result.url.must_equal("/westminster_hall/2001/jul/18/operation-lancet#column_112wh")
         end
-          
+        
         it "should correctly handle Commons Written Statements" do
           result = HansardReference.lookup("HC Deb 08 March 2004 vol 418 c93WS")
           result.house.must_equal("Commons")
           result.sitting_type.must_equal("Written Statements")
           result.url.must_equal("/written_statements/2004/mar/08/police-information-technology#column_93ws")
         end
-          
+        
         it "should correctly handle Lords Written Statements" do
           result = HansardReference.lookup("HL Deb 08 March 2004 vol 658 cc63-4WS")
           result.house.must_equal("Lords")
           result.sitting_type.must_equal("Written Statements")
           result.url.must_equal("/written_statements/2004/mar/08/council-for-science-and-technology#column_63ws")
         end
-          
+        
         it "should correctly handle Commmons sittings" do
           result = HansardReference.lookup("HC Deb 18 November 1976 vol 919 cc1555-6")
           result.house.must_equal("Commons")
