@@ -33,7 +33,6 @@ class ContributionTest < MiniTest::Spec
       
       it "should respond to the acts_as_present_on_date methods" do
         Contribution.must_respond_to(:present_dates_in_interval)
-        test_contribution.must_respond_to(:present_on_date_find)
       end
     end
     
