@@ -11,8 +11,9 @@ class SolrMonkeypatchTest < MiniTest::Spec
     end
     
     it "should return the contents of the @solr_data[:highlights] instance variable" do
-      results.instance_variable_set("@solr_data", {:highlights => ["fake result"]})
-      results.highlights.must_equal(["fake result"])
+      loaded_results = ActsAsSolr::SearchResults.new()
+      loaded_results.instance_variable_set("@solr_data", {:highlights => ["fake result"]})
+      loaded_results.highlights.must_equal(["fake result"])
     end
     
     it "should return nil if the @solr_data instance variable has not been set" do
