@@ -238,5 +238,14 @@ class ContributionTest < MiniTest::Spec
         test_contribution.url.must_equal("written_statements/1805/nov/10/test#anchor")
       end
     end
+    
+    describe "when determining whether there is any material for a given date range" do
+      it "should search on the model's date field using the supplied start and end dates" do
+        start_date = Date.parse("2002-10-01")
+        end_date = Date.parse("2002-10-31")
+        Contribution.expects(:find).with(:all, {:select => :date, :conditions => ["date >= ? and date <= ?", start_date, end_date]}).returns([])
+        Contribution.present_dates_in_interval(start_date, end_date)
+      end
+    end
   end
 end
