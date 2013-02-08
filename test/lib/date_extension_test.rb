@@ -10,11 +10,24 @@ class DateExtensionTest < MiniTest::Spec
     
     describe "when asked for material_dates_count_upto" do
       it "should check through all the ActiveRecord models to see if they have a present_dates_in_interval method" do
-        Contribution.must_respond_to(:present_dates_in_interval)
         Contribution.expects(:respond_to?).with(:present_dates_in_interval)
         Person.expects(:respond_to?).with(:present_dates_in_interval)
         Section.expects(:respond_to?).with(:present_dates_in_interval)
         test_date.material_dates_count_upto(Date.parse("2012-02-17"))
+      end
+      
+      it "should call present_dates_in_interval on Contribution" do
+        Contribution.expects(:present_dates_in_interval)
+        test_date.material_dates_count_upto(Date.parse("2012-02-17"))
+      end
+      
+      it "should an unsorted hash of each relevant date with a corresponding count value" do
+        date1 = "2012-02-16 00:00:00"
+        date2 = "2012-02-20"
+        date3 = "2012-02-21"
+        Contribution.expects(:present_dates_in_interval).with(test_date, Date.parse("2012-02-26")).returns([date1, date1, date1, date2, date3, date3, date3, date3, date3])
+        result = test_date.material_dates_count_upto(Date.parse("2012-02-26"))
+        result.must_equal({Date.parse(date1) => 3, Date.parse(date2) => 1, Date.parse(date3) => 5})
       end
     end
     
