@@ -2,7 +2,7 @@
 
 # adapted from: https://github.com/millbanksystems/hansard/blob/master/app/models/hansard_reference.rb
 
-require './models/section'
+require './models/contribution'
 
 class HansardReference
   attr_reader :house, :date, :column, :end_column, :url, :match_type, :sitting_type, :volume
@@ -62,7 +62,7 @@ class HansardReference
       column, end_column = self.find_columns(text)
     else
       url = "/sittings/#{date.year}/#{SHORT_MONTHS[date.month-1].downcase}/#{date.day}"
-      if Section.find_by_date(date, {:limit => 1})
+      if Contribution.find_by_date(date)
         return HansardReference.new({:url => url, :match_type => "partial", :date => date, :volume => volume, :house => house})
       else
         return HansardReference.new({:match_type => "not stored", :date => date, :volume => volume, :house => house})
@@ -83,10 +83,10 @@ class HansardReference
     
     if sitting_type
       sitting = self.get_db_sitting_type(sitting_type, house)
-      ref = find_matching_section(date, sitting, column, end_column)
+      ref = find_matching_contribution(date, sitting, column, end_column)
     else
       sitting = self.get_db_sitting_type("no match", house)
-      ref = find_matching_section(date, sitting, column, end_column)
+      ref = find_matching_contribution(date, sitting, column, end_column)
       sitting_type = sitting_type_from_db_sitting_type(sitting)
     end
     
@@ -94,7 +94,7 @@ class HansardReference
       url = construct_url(house, date, ref.slug, column, sitting_type)
       HansardReference.new({:sitting_type => sitting_type, :match_type => "full", :url => url, :house => house, :date => date, :volume => volume, :column => column_with_suffix(house, column, sitting_type)})
     else
-      if Section.find_by_date(date, {:limit => 1})
+      if Contribution.find_by_date(date, {:limit => 1})
         return false
       else
         return HansardReference.new({:sitting_type => sitting_type, :match_type => "not stored",  :house => house, :date => date, :volume => volume, :column => column_with_suffix(house, column, sitting_type)})
@@ -194,21 +194,16 @@ class HansardReference
       end
     end
     
-    def self.find_matching_section(date, sitting_type, start_column, end_column)
+    def self.find_matching_contribution(date, sitting_type, start_column, end_column)
       if end_column
-        sections = Section.find_all_by_date_and_sitting_type(date, sitting_type, {:conditions => "start_column <= #{start_column} and end_column >= #{end_column}", :order => "start_column DESC", :limit => 1})
+        sections = Contribution.find_all_by_date_and_sitting_type(date, sitting_type, {:conditions => "start_column <= #{start_column} and end_column >= #{end_column}", :order => "start_column DESC", :limit => 1})
       else
-        sections = Section.find_all_by_date_and_sitting_type(date, sitting_type, {:conditions => "(start_column < #{start_column} and end_column >= #{start_column}) or start_column = #{start_column}", :order => "end_column, id"})
+        sections = Contribution.find_all_by_date_and_sitting_type(date, sitting_type, {:conditions => "(start_column < #{start_column} and end_column >= #{start_column}) or start_column = #{start_column}", :order => "end_column, id"})
       end
       if sections.nil? or sections.empty?
         nil
       elsif sections.count > 1
-        sift = sections.dup.delete_if{ |x| x.section_type =~ /Group/}
-        unless sift.empty?
-          sift.first
-        else
           sections.first
-        end
       else
         sections.first
       end

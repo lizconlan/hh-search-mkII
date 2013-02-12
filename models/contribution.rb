@@ -34,15 +34,6 @@ class Contribution < ActiveRecord::Base
     "#{person.honorific} #{person.name}" if person
   end
     
-  def house
-    case sitting_type
-    when /Lords/, /GrandCommittee/
-      "Lords"
-    when /Commons/, /WestminsterHall/
-      "Commons"
-    end
-  end
-    
   def display_sitting_type
     case sitting_type
     when "CommonsWrittenAnswersSitting", "LordsWrittenAnswersSitting"
@@ -84,24 +75,12 @@ class Contribution < ActiveRecord::Base
   def year
    date.year
   end
-
+  
   def century
     date.century
   end
-
+  
   def decade
    date.decade
-  end
-
-  def cols
-    column_range ? column_range.split(",").map{ |col| col } : []
-  end
-
-  def start_column
-    cols.empty? ? nil : cols.first
-  end
-  
-  def end_column
-    cols.empty? ? nil : cols.last
   end
 end

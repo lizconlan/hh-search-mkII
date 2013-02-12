@@ -22,55 +22,8 @@ class ContributionTest < MiniTest::Spec
         test_contribution.speaker_name.must_equal(nil)
       end
       
-      it "should return nil for start and end columns if no column data is stored" do
-        test_contribution.start_column.must_equal(nil)
-        test_contribution.end_column.must_equal(nil)
-      end
-      
-      it "should return an empty array for cols if no column data is stored" do
-        test_contribution.cols.must_equal([])
-      end
-      
       it "should respond to the acts_as_present_on_date methods" do
         Contribution.must_respond_to(:present_dates_in_interval)
-      end
-    end
-    
-    describe "when given a contribution with just a start column" do
-      test_contribution = Contribution.new(
-        {:sitting_type => "HouseOfCommonsSitting",
-         :date => Date.parse("1805-11-10"),
-         :slug => "test",
-         :anchor_id => "anchor",
-         :column_range => "42"
-         })
-      
-      it "should return a single element array for cols" do
-        test_contribution.cols.must_equal(["42"])
-      end
-      
-      it "should return identical start and end columns" do
-        test_contribution.start_column.must_equal("42")
-        test_contribution.end_column.must_equal("42")
-      end
-    end
-    
-    describe "when given a contribution with start column and end columns" do
-      test_contribution = Contribution.new(
-        {:sitting_type => "HouseOfCommonsSitting",
-         :date => Date.parse("1805-11-10"),
-         :slug => "test",
-         :anchor_id => "anchor",
-         :column_range => "42,44"
-         })
-      
-      it "should return a 2 element array for cols" do
-        test_contribution.cols.must_equal(["42","44"])
-      end
-      
-      it "should return the start and end columns" do
-        test_contribution.start_column.must_equal("42")
-        test_contribution.end_column.must_equal("44")
       end
     end
     
@@ -106,7 +59,6 @@ class ContributionTest < MiniTest::Spec
       it "should set the sitting-specific attributes correctly" do
         test_contribution.display_sitting_type.must_equal("Commons")
         test_contribution.section_link.must_equal("commons")
-        test_contribution.house.must_equal("Commons")
         test_contribution.url.must_equal("commons/1805/nov/10/test#anchor")
       end
     end
@@ -122,7 +74,6 @@ class ContributionTest < MiniTest::Spec
       it "should set the sitting-specific attributes correctly" do
         test_contribution.display_sitting_type.must_equal("Westminster Hall")
         test_contribution.section_link.must_equal("westminster_hall")
-        test_contribution.house.must_equal("Commons")
         test_contribution.url.must_equal("westminster_hall/1805/nov/10/test#anchor")
       end
     end
@@ -138,7 +89,6 @@ class ContributionTest < MiniTest::Spec
       it "should set the sitting-specific attributes correctly" do
         test_contribution.display_sitting_type.must_equal("Written Answers")
         test_contribution.section_link.must_equal("written_answers")
-        test_contribution.house.must_equal("Commons")
         test_contribution.url.must_equal("written_answers/1805/nov/10/test#anchor")
       end
     end
@@ -154,7 +104,6 @@ class ContributionTest < MiniTest::Spec
       it "should set the sitting-specific attributes correctly" do
         test_contribution.display_sitting_type.must_equal("Written Statements")
         test_contribution.section_link.must_equal("written_statements")
-        test_contribution.house.must_equal("Commons")
         test_contribution.url.must_equal("written_statements/1805/nov/10/test#anchor")
       end
     end
@@ -170,7 +119,6 @@ class ContributionTest < MiniTest::Spec
       it "should set the sitting-specific attributes correctly" do
         test_contribution.display_sitting_type.must_equal("Lords")
         test_contribution.section_link.must_equal("lords")
-        test_contribution.house.must_equal("Lords")
         test_contribution.url.must_equal("lords/1805/nov/10/test#anchor")
       end
     end
@@ -186,7 +134,6 @@ class ContributionTest < MiniTest::Spec
       it "should set the sitting-specific attributes correctly" do
         test_contribution.display_sitting_type.must_equal("Grand Committee report")
         test_contribution.section_link.must_equal("grand_committee_report")
-        test_contribution.house.must_equal("Lords")
         test_contribution.url.must_equal("grand_committee_report/1805/nov/10/test#anchor")
       end
     end
@@ -202,7 +149,6 @@ class ContributionTest < MiniTest::Spec
       it "should set the sitting-specific attributes correctly" do
         test_contribution.display_sitting_type.must_equal("Lords Reports")
         test_contribution.section_link.must_equal("lords_reports")
-        test_contribution.house.must_equal("Lords")
         test_contribution.url.must_equal("lords_reports/1805/nov/10/test#anchor")
       end
     end
@@ -218,7 +164,6 @@ class ContributionTest < MiniTest::Spec
       it "should set the sitting-specific attributes correctly" do
         test_contribution.display_sitting_type.must_equal("Written Answers")
         test_contribution.section_link.must_equal("written_answers")
-        test_contribution.house.must_equal("Lords")
         test_contribution.url.must_equal("written_answers/1805/nov/10/test#anchor")
       end
     end
@@ -234,7 +179,6 @@ class ContributionTest < MiniTest::Spec
       it "should set the sitting-specific attributes correctly" do
         test_contribution.display_sitting_type.must_equal("Written Statements")
         test_contribution.section_link.must_equal("written_statements")
-        test_contribution.house.must_equal("Lords")
         test_contribution.url.must_equal("written_statements/1805/nov/10/test#anchor")
       end
     end
