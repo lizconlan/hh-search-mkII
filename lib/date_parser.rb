@@ -14,7 +14,7 @@ class DateParser
       end
       return nil unless match
       return nil if date_in_future? match
-      return nil unless Section.find_by_date(date_from_params(match))
+      return nil unless Contribution.find_by_date(date_from_params(match))
       return match
     end
   end

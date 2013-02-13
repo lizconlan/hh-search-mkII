@@ -2,7 +2,6 @@ require 'date'
 require_relative '../minitest_helper.rb'
 require_relative '../../lib/date_extension.rb'
 require_relative '../../models/contribution.rb'
-require_relative '../../models/section.rb'
 
 class DateExtensionTest < MiniTest::Spec
   describe Date do
@@ -12,7 +11,6 @@ class DateExtensionTest < MiniTest::Spec
       it "should check through all the ActiveRecord models to see if they have a present_dates_in_interval method" do
         Contribution.expects(:respond_to?).with(:present_dates_in_interval)
         Person.expects(:respond_to?).with(:present_dates_in_interval)
-        Section.expects(:respond_to?).with(:present_dates_in_interval)
         test_date.material_dates_count_upto(Date.parse("2012-02-17"))
       end
       

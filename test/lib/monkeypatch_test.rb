@@ -1,6 +1,5 @@
 require_relative '../minitest_helper.rb'
 require_relative '../../models/contribution'
-require_relative '../../models/section'
 require_relative '../../models/person'
 
 class MonkeypatchTest < MiniTest::Spec
@@ -20,7 +19,7 @@ class MonkeypatchTest < MiniTest::Spec
       end
     
       it "should return an array of classes that inherit from the class" do
-        ActiveRecord::Base.subclasses.must_equal([Contribution, Section, Person])
+        ActiveRecord::Base.subclasses.must_equal([Contribution, Person])
       end
     end
   end
