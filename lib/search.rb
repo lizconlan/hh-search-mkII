@@ -45,10 +45,6 @@ class Search
     self.date_match = DateParser.date_match(query)
   end
   
-  def check_for_hansard_reference
-    self.hansard_reference = HansardReference.create_from(query)
-  end
-  
   def create_search_string
     self.search_string = text_search
     self.search_string += speech_search if speaker
