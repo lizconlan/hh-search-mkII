@@ -11,7 +11,7 @@ class PaginationTest < MiniTest::Spec
       haml_template = File.read(File.join(File.dirname(__FILE__) + "/../../views/", '_pagination.haml'))
       @engine = Haml::Engine.new(haml_template)
       Search.any_instance.stubs(:find_matches).returns([])
-      @search = Search.new({:query => "test", :sort_options => ['date', 'reverse_date']})
+      @search = Search.new({:query => "test"})
       @page = Object.new()
       @page.stubs(:querystring_builder).returns("http://test")
     end
