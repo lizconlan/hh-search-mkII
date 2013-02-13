@@ -9,8 +9,8 @@
 - else
   %a{:href => "#{querystring_builder({"page"=>2})}"} 2
 - if @search.page < 9
-  - if @search.last_page < 11 and @search.last_page > 4
-    - last = @search.last_page - 2
+  - if @search.last_page < 11
+    - last = @search.last_page
   - else
     - last = 9
   - (3..last).to_a.each do |i|
