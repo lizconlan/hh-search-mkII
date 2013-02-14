@@ -1,9 +1,14 @@
 # adapted from: https://github.com/millbanksystems/hansard/blob/master/app/helpers/search_helper.rb
+# and: https://github.com/millbanksystems/hansard/blob/master/app/helpers/application_helper.rb
 
 require './helpers/present_on_date_timeline_helper'
 
 module SearchHelper
   include PresentOnDateTimelineHelper
+  
+  def month_abbr(month)
+    Date::ABBR_MONTHNAMES[month].downcase
+  end
   
   def month_string date, options={}
     options[:brief] ? "#{month_abbr(date.month).titleize}." : Date::MONTHNAMES[date.month]
