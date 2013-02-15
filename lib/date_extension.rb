@@ -1,5 +1,6 @@
 # adapted from: https://github.com/millbanksystems/hansard/blob/master/vendor/plugins/present_on_date/lib/date_extension.rb
 require 'active_support/core_ext/integer/inflections'
+require 'active_support/core_ext/enumerable'
 require 'active_support/dependencies'
 
 class Date

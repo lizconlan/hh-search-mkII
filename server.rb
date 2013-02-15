@@ -6,7 +6,7 @@ require 'sanitize'
 require 'date'
 require 'logger'
 require './lib/date_extension.rb'
-require './helpers/search_helper.rb'
+require './helpers/search_timeline_helper.rb'
 
 set :logging, true
  
@@ -25,7 +25,7 @@ dbconfig = YAML::load(File.open 'config/database.yml')
 ActiveRecord::Base.establish_connection(dbconfig)
 
 helpers do
-  include SearchHelper
+  include SearchTimelineHelper
 end
 
 require './models/person'
