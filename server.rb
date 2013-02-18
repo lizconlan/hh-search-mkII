@@ -34,13 +34,13 @@ require './models/contribution'
 require './lib/search'
 require './lib/date_parser.rb'
 
-get "/search/" do
+get "/" do
   haml(:"search_help")
 end
 
-post "/search/" do
+post "/" do
   query = params[:query]
-  redirect "/#{CGI::escape(query)}"
+  redirect "#{request.path_info}/#{CGI::escape(query)}"
 end
 
 get "/:query" do
