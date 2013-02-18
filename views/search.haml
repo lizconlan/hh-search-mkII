@@ -8,7 +8,7 @@
   - if @search.date_match
     %div#sitting-date-matches
       Jump to: 
-      %a{:href => "#{PARENT_URL}/sittings/#{@search.date_match[:year]}/#{@search.date_match[:month]}/#{@search.date_match[:day]}"}= "Sitting of #{@search.date_match[:day]} #{@search.date_match[:month].capitalize} #{@search.date_match[:year]}"
+      %a{:href => "#{request.host}/sittings/#{@search.date_match[:year]}/#{@search.date_match[:month]}/#{@search.date_match[:day]}"}= "Sitting of #{@search.date_match[:day]} #{@search.date_match[:month].capitalize} #{@search.date_match[:year]}"
   
   - unless @search.filters.empty?
     Showing only:

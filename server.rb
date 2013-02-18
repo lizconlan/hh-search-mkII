@@ -13,7 +13,6 @@ set :logging, true
 @logger = Logger.new('log/app.log')
 
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
-PARENT_URL = "/"
 RAILS_ROOT = File.dirname(__FILE__)
 RAILS_DEFAULT_LOGGER = @logger
 
@@ -44,7 +43,7 @@ post "/search/" do
   redirect "/#{CGI::escape(query)}"
 end
 
-get "/search/:query" do
+get "/:query" do
   @reference = HansardReference.lookup(CGI::unescape(params[:query]))
   if @reference
     @query = Sanitize.clean(CGI::unescape(params[:query]))
@@ -54,7 +53,7 @@ get "/search/:query" do
     elsif @reference.match_type == "partial"
       @date_match = @reference
     else
-      redirect "#{PARENT_URL}#{@reference.url}"
+      redirect "#{request.host}/#{@reference.url}"
     end
   end
   
