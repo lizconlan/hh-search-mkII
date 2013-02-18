@@ -13,7 +13,7 @@ set :logging, true
 @logger = Logger.new('log/app.log')
 
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
-PARENT_URL = "http://hansard.millbanksystems.com"
+PARENT_URL = "/"
 RAILS_ROOT = File.dirname(__FILE__)
 RAILS_DEFAULT_LOGGER = @logger
 
@@ -35,16 +35,16 @@ require './models/contribution'
 require './lib/search'
 require './lib/date_parser.rb'
 
-get "/" do
+get "/search/" do
   haml(:"search_help")
 end
 
-post "/" do
+post "/search/" do
   query = params[:query]
   redirect "/#{CGI::escape(query)}"
 end
 
-get "/:query" do
+get "/search/:query" do
   @reference = HansardReference.lookup(CGI::unescape(params[:query]))
   if @reference
     @query = Sanitize.clean(CGI::unescape(params[:query]))
