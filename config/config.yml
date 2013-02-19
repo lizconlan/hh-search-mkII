@@ -1,0 +1,9 @@
+development:
+  parent_url: "http://hansard.millbanksystems.com"
+  search_redir: ""
+test:
+  parent_url: "http://hansard.millbanksystems.com"
+  search_redir: ""
+production:
+  parent_url: "/"
+  search_redir: "/search"
