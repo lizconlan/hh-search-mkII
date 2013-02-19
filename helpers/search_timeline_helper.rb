@@ -158,7 +158,7 @@ module SearchTimelineHelper
     end
     
     qstring = qs.join("&")
-    qstring.empty? ? request.path_info : "?#{qstring}"
+    qstring.empty? ? "#{settings.search_redir}#{request.path_info}" : "?#{qstring}"
   end
   
   # dates index
