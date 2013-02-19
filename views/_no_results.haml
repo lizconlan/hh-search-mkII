@@ -6,7 +6,7 @@
 - unless @search.filters.empty?
   %p
     Would you like to
-    %a{:href => "#{PARENT_URL}#{settings.search_redir}/#{@query}"} search
+    %a{:href => "#{settings.search_redir}/#{@query}"} search
     &="for '#{@query}' without any filters?"
 %p
   %a{:href => "#{PARENT_URL}/search"} Search Help
