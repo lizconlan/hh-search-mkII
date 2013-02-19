@@ -117,16 +117,18 @@ module SearchTimelineHelper
     
     name = option.keys.first
     value = option[name]
-    if value.nil?
-      eval "#{name.to_s} = nil"
+    if name
+      if value.nil?
+        eval "#{name.to_s} = nil"
       
-      page = 0
-    else
-      if ["decade", "century", "year", "month", "day"].include?(name.to_s)
-        day, month, year, decade, century = nil
+        page = 0
+      else
+        if ["decade", "century", "year", "month", "day"].include?(name.to_s)
+          day, month, year, decade, century = nil
+        end
+        eval "#{name.to_s} = '#{value}'"
+        page = 0 unless name.to_s == "page"
       end
-      eval "#{name.to_s} = '#{value}'"
-      page = 0 unless name.to_s == "page"
     end
     page = page.to_i
     
