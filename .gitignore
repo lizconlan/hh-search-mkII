@@ -1,4 +1,4 @@
-solr/logs
+solr/logs/*.log
 solr/tmp/*pid
 solr/solr/data/development
 solr/solr/data/production
