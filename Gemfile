@@ -2,6 +2,7 @@ source "http://rubygems.org"
 
 gem 'activerecord', '3.2.12'
 gem 'sinatra', '1.3.4'
+gem 'sinatra-contrib', '1.3.2'
 gem 'rack', '1.5.2'
 gem 'mysql', '2.8.1'
 gem 'sanitize'

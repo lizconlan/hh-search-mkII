@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'sinatra/config_file'
 require 'haml'
 require 'active_record'
 require './lib/active_record_monkeypatch.rb'
@@ -9,10 +10,13 @@ require './lib/date_extension.rb'
 require './helpers/search_timeline_helper.rb'
 
 set :logging, true
- 
+
+config_file './config/config.yml'
+
 @logger = Logger.new('log/app.log')
 
 WEBSOLR_URL = "http://127.0.0.1:8983/solr"
+PARENT_URL = settings.parent_url
 RAILS_ROOT = File.dirname(__FILE__)
 RAILS_DEFAULT_LOGGER = @logger
 
@@ -40,7 +44,7 @@ end
 
 post "/" do
   query = params[:query]
-  redirect "#{request.path_info}/#{CGI::escape(query)}"
+  redirect "#{settings.search_redir}/#{CGI::escape(query)}"
 end
 
 get "/:query" do
@@ -53,7 +57,7 @@ get "/:query" do
     elsif @reference.match_type == "partial"
       @date_match = @reference
     else
-      redirect "#{request.host}/#{@reference.url}"
+      redirect "#{PARENT_URL}#{@reference.url}"
     end
   end
   

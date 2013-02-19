@@ -1,6 +1,6 @@
 %div.search-result
   %h4.result-title
-    %a{:href => "#{request.host}/#{result.url}"}= result.sitting_title
+    %a{:href => "#{PARENT_URL}/#{result.url}"}= result.sitting_title
   
   -if result.speaker_slug
     %cite
