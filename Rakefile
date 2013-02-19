@@ -30,7 +30,7 @@ namespace :solr do
         end
         sleep(5)
         File.open("#{SOLR_PATH}/tmp/search_pid", "w"){ |f| f << pid}
-        puts "#{env} Solr started successfully on #{SOLR_PORT}, pid: #{pid}."
+        puts "Solr started successfully on #{SOLR_PORT}, pid: #{pid}."
       end
     end
   end
