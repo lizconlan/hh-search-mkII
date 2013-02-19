@@ -11,7 +11,7 @@
     %div#header
       %div.search-help
         %a{:href => "#{PARENT_URL}/search"} Search Help
-      %form{:action => "/#{settings.search_redir}", :id => "search", :method => "post", :rel => "search"}
+      %form{:action => "#{settings.search_redir}/", :id => "search", :method => "post", :rel => "search"}
         %input{:size => "24", :title => "Access key: S", :accesskey => "s", :name => "query", :id => "search-query", :type => "search", :placeholder => "Search Hansard", :autosave => "hansard.millbanksystems.com", :results => "10", :value => params[:query]}
         %input{:type => "submit", :value => "Search"}
       %div#nav
