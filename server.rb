@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/config_file'
+require 'newrelic_rpm'
 require 'haml'
 require 'active_record'
 require './lib/active_record_monkeypatch.rb'

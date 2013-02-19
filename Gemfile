@@ -9,6 +9,7 @@ gem 'sanitize'
 gem 'json', '1.7.7'
 gem 'haml', '3.1.4'
 gem 'acts_as_solr', '1.3.3'
+gem 'newrelic_rpm'
 
 group :development do
   gem 'shotgun'
