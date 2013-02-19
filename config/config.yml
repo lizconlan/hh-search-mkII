@@ -5,5 +5,5 @@ test:
   parent_url: "http://hansard.millbanksystems.com"
   search_redir: ""
 production:
-  parent_url: "/"
+  parent_url: ""
   search_redir: "/search"
