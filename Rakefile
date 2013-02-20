@@ -27,7 +27,7 @@ namespace :solr do
       Dir.chdir(SOLR_PATH) do
         pid = fork do
           #STDERR.close
-          if File.exist?("./newrelic/newrelic.jar")
+          if env == "production"
             exec "java -Dsolr.data.dir=solr/data/#{env} -javaagent:../newrelic/newrelic.jar -Djetty.port=#{SOLR_PORT} -jar start.jar"
           else
             exec "java -Dsolr.data.dir=solr/data/#{env} -Djetty.port=#{SOLR_PORT} -jar start.jar"
