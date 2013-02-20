@@ -11,10 +11,8 @@ class Contribution < ActiveRecord::Base
   
   acts_as_solr :fields => [:solr_text, {:person_id => :facet},
                                        {:date => :facet},
-                                       {:year => :facet},
-                                       {:decade => :facet},
                                        {:sitting_type => :facet}],
-               :facets => [:person_id, {:date => :date}, :year, :decade]
+               :facets => [:person_id, {:date => :date}]
                
   self.solr_configuration  =  { :type_field => "type_t",
                                 :primary_key_field => "pk_i",
