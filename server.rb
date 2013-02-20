@@ -46,8 +46,8 @@ end
 post "/" do
   query = CGI::escape(params[:query])
   qs = querystring_builder({:page => 1})
-  qs = qs[1..qs.length] 
-  query = "#{query}?#{qs}" unless qs.blank?  
+  qs = qs[settings.search_redir.length+1..qs.length]
+  query = "#{query}?#{qs}" unless qs.blank? or !qs.include?("=")
   redirect "#{settings.search_redir}/#{query}"
 end
 
