@@ -13,8 +13,9 @@ require "./solr/configure/environment.rb"
 
 namespace :solr do
 
-  desc 'Starts Solr. Options accepted: PORT=XX'
+  desc 'Starts Solr. Options accepted: ENV=your_env, PORT=XX'
   task :start do
+    env =  ENV['env'] || "development"
     begin
       n = Net::HTTP.new('127.0.0.1', SOLR_PORT)
       n.request_head('/').value 
@@ -26,19 +27,24 @@ namespace :solr do
       Dir.chdir(SOLR_PATH) do
         pid = fork do
           #STDERR.close
-          exec "java -Dsolr.data.dir=solr/data -Djetty.port=#{SOLR_PORT} -jar start.jar"
+          if File.exist?("./newrelic/newrelic.jar")
+            exec "java -Dsolr.data.dir=solr/data/#{env} -javaagent:../newrelic/newrelic.jar -Djetty.port=#{SOLR_PORT} -jar start.jar"
+          else
+            exec "java -Dsolr.data.dir=solr/data/#{env} -Djetty.port=#{SOLR_PORT} -jar start.jar"
+          end
         end
         sleep(5)
-        File.open("#{SOLR_PATH}/tmp/search_pid", "w"){ |f| f << pid}
-        puts "Solr started successfully on #{SOLR_PORT}, pid: #{pid}."
+        File.open("#{SOLR_PATH}/tmp/#{env}_pid", "w"){ |f| f << pid}
+        puts "#{env} Solr started successfully on #{SOLR_PORT}, pid: #{pid}."
       end
     end
   end
   
-  desc 'Stops Solr'
+  desc 'Stops Solr. Options accepted: ENV=your_env'
   task :stop do
+    env =  ENV['env'] || "development"
     fork do
-      file_path = "#{SOLR_PATH}/tmp/search_pid"
+      file_path = "#{SOLR_PATH}/tmp/#{env}_pid"
       if File.exists?(file_path)
         File.open(file_path, "r") do |f| 
           pid = f.readline
@@ -47,7 +53,7 @@ namespace :solr do
         File.unlink(file_path)
         puts "Solr shutdown successfully."
       else
-        puts "Solr is not running.  I haven't done anything."
+        puts "#{env} Solr is not running.  I haven't done anything."
       end
     end
   end
