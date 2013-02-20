@@ -1,6 +1,5 @@
 require 'sinatra'
 require 'sinatra/config_file'
-require 'newrelic_rpm'
 require 'haml'
 require 'active_record'
 require './lib/active_record_monkeypatch.rb'
@@ -9,6 +8,8 @@ require 'date'
 require 'logger'
 require './lib/date_extension.rb'
 require './helpers/search_timeline_helper.rb'
+
+require 'newrelic_rpm'
 
 set :logging, true
 
