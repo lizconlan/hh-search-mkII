@@ -51,7 +51,7 @@ namespace :solr do
           Process.kill('TERM', pid.to_i)
         end
         File.unlink(file_path)
-        puts "Solr shutdown successfully."
+        puts "#{env} Solr shutdown successfully."
       else
         puts "#{env} Solr is not running.  I haven't done anything."
       end
