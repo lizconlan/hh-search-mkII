@@ -148,8 +148,14 @@ class SearchTimelineHelperTest < MiniTest::Spec
       end
       
       describe "when the querystring already includes a page number" do
+        before do
+          @settings = mock
+          @settings.stubs(:search_redir).returns("")
+        end
+        
         let(:request) { @fake_request }
         let(:params) {{:page => 4}}
+        let(:settings){ @settings }
         
         it "should change the page number to the one supplied" do
           querystring_builder("page" => 3).must_equal("?page=3")
