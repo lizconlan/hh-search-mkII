@@ -57,7 +57,7 @@
           = "Results #{@search.first_result} to #{@search.last_result} of #{@search.results_size}"
             
     - @search.results.each do |result_line|
-      =haml(:"_result", :locals => {:result => result_line, :highlight => @search.highlights[result_line.id].join(" ")}, :layout => false)
+      =haml(:"_result", :locals => {:result => result_line, :highlight => @search.highlights[result_line.id].to_a.join(" ")}, :layout => false)
       
     -if @search.results_size > @search.num_per_page
       %div.pagination
