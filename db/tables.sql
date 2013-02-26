@@ -11,8 +11,6 @@ create table `contributions` (
   `part` int(11) NOT NULL,
   `series` int(11) NOT NULL,
   `house` varchar(16),
-  `question_no` varchar(32) NULL,
-  `question_subject` text NULL,
   `person_id` int(11) NULL,
   PRIMARY KEY  (`id`),
   INDEX `date_index` (`date`),
