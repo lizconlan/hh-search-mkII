@@ -4,6 +4,10 @@
 #  https://github.com/millbanksystems/hansard/blob/master/app/helpers/application_helper.rb
 
 module SearchTimelineHelper
+  def int_with_commas(n)
+    n.to_s.reverse.gsub(/...(?=.)/,'\&,').reverse
+  end
+  
   def month_abbr(month)
     Date::ABBR_MONTHNAMES[month].downcase
   end
