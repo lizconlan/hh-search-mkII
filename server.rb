@@ -9,6 +9,15 @@ require 'logger'
 require './lib/date_extension.rb'
 require './helpers/search_timeline_helper.rb'
 
+error 404 do
+  @page_title = "Page not found"
+  haml(:"404")
+end
+
+error 500 do
+  haml(:"500", :layout => false)
+end
+
 require 'newrelic_rpm'
 
 set :logging, true
