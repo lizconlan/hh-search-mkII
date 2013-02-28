@@ -1384,7 +1384,7 @@
                   default="true"
                   class="solr.highlight.GapFragmenter">
         <lst name="defaults">
-          <int name="hl.fragsize">200</int>
+          <int name="hl.fragsize">100</int>
         </lst>
       </fragmenter>
 

@@ -1,6 +1,6 @@
 require_relative '../minitest_helper.rb'
 require 'acts_as_solr'
-require_relative '../../lib/search_results'
+require_relative '../../lib/acts_as_solr_hacks.rb'
 
 class SolrMonkeypatchTest < MiniTest::Spec
   describe "SolrMonkeyPatch" do

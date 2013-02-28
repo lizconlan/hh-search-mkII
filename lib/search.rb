@@ -108,7 +108,7 @@ class Search
     { :highlight => { :fields =>["solr_text"],
                       :prefix => highlight_prefix,
                       :suffix => highlight_suffix,
-                      :require_field_match => false,
+                      :require_field_match => true,
                       :fragsize => 200 } }
   end
   

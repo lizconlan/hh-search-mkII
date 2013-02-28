@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 require 'acts_as_solr'
-require './lib/search_results.rb'
+require './lib/acts_as_solr_hacks.rb'
 require './lib/present_on_date.rb'
 
 class Contribution < ActiveRecord::Base
