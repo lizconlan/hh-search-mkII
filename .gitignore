@@ -4,6 +4,7 @@ solr/solr/data/development
 solr/solr/data/production
 solr/solr/data/test
 solr/solr/tmp
+solr/work/Jetty*
 solr/solr/*.tmp
 log/*.log
 coverage
