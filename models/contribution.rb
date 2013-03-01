@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 require 'acts_as_solr'
-require './lib/acts_as_solr_hacks.rb'
+require './plugins/acts_as_solr_hacks/init.rb'
 require './lib/present_on_date.rb'
 
 class Contribution < ActiveRecord::Base
@@ -9,11 +9,13 @@ class Contribution < ActiveRecord::Base
   
   acts_as_present_on_date :date
   
-  acts_as_solr :fields => [:solr_text, {:person_id => :facet},
-                                       {:date => :facet},
-                                       {:sitting_type => :facet}],
-               :facets => [:person_id, {:date => :date}]
-               
+  acts_as_solr :fields => [
+        [:solr_text, {:type => "t"}],
+        [:date, {:type => "facet"}],
+        [:person_id, {:type => "facet"}],
+        [:sitting_type, {:type => "facet"}]],
+        :facets => [{:person_id => :integer}, {:date => :date}]
+  
   self.solr_configuration  =  { :type_field => "type_t",
                                 :primary_key_field => "pk_i",
                                 :default_boost => 1.0 }

@@ -1,0 +1,2 @@
+class Solr::Connection
+end
