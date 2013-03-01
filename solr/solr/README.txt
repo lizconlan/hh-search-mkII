@@ -45,9 +45,7 @@ The Solr Home directory typically contains the following subdirectories...
         This directory is optional.  If it exists, Solr will load any Jars
         found in this directory and use them to resolve any "plugins"
         specified in your solrconfig.xml or schema.xml (ie: Analyzers,
-        Request Handlers, etc...).  Alternatively you can use the <lib>
-        syntax in solrconfig.xml to direct Solr to your plugins.  See the
-        example solrconfig.xml file for details.
+        Request Handlers, etc...)
 
    bin/
         This directory is optional.  It is the default location used for
