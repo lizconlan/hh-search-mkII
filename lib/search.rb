@@ -123,9 +123,9 @@ class Search
   def sort_options
     case sort
     when 'date'
-     { :order => 'date asc' }
+     { :order => 'date_facet asc' }
     when 'reverse_date'
-     { :order => 'date desc'}
+     { :order => 'date_facet desc'}
     else
       {}
     end
