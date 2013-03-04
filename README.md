@@ -27,5 +27,6 @@ Yeah, the first one didn't go so well - the idea was sound (well, I thought so) 
 
 ## Notes
 
-* Start and stop solr using the rake tasks (if stuck, kill the process and start again)
-* Hacked to work with Ruby 1.9.x and ActiveRecord 3.2.x
+* In development/test, start and stop solr using the rake tasks (if stuck, kill the process and start again)
+* Codebase hacked to work with Ruby 1.9.x and ActiveRecord 3.2.x
+* Acts As Solr hacked to run Solr 3.6.2
