@@ -3,4 +3,5 @@ database:  hansard_search
 username: 
 password: 
 socket: /tmp/mysql.sock
+encoding: utf8
 reconnect: true
