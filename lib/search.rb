@@ -24,7 +24,7 @@ class Search
   end
   
   def clean_query query
-    query = Sanitize.clean(query).gsub("%252B", "+")
+    query = Sanitize.clean(query).gsub(/%(:?25)?2B/, "+")
     query.gsub!(/(^[^"]*)(")([^"]*)$/, '\1\3')
     return query
   end
