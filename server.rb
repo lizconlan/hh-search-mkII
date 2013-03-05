@@ -112,7 +112,7 @@ end
 def do_search
   options = get_search_params(params)
   
-  @query = CGI::unescape(params[:query])
+  @query = CGI::unescape(params[:query].gsub("+","%2B"))
   @query = Sanitize.clean(@query)
     
   if @query
