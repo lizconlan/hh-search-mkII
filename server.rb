@@ -54,7 +54,7 @@ get "/" do
 end
 
 post "/" do
-  query = CGI::escape(Sanitize.clean(params[:query]))
+  query = CGI::escape(Sanitize.clean(params[:query].gsub("+", "%252B")))
   qs = querystring_builder({:page => 1})
   qs = qs[settings.search_redir.length+1..qs.length]
   query = "#{query}?#{qs}" unless qs.blank? or !qs.include?("=")
@@ -63,8 +63,8 @@ end
 
 get "/:query" do
   @reference = HansardReference.lookup(CGI::unescape(params[:query]))
+  @query = Sanitize.clean(CGI::unescape(params[:query])).gsub("%2B","+")
   if @reference
-    @query = Sanitize.clean(CGI::unescape(params[:query]))
     if @reference.match_type == "not stored"
       @page_title = 'Hansard not found'
       haml(:reference_not_found)
@@ -112,9 +112,9 @@ end
 def do_search
   options = get_search_params(params)
   
-  @query = CGI::unescape(params[:query].gsub("+","%2B"))
+  @query = CGI::unescape(params[:query]).gsub("%2B","+")
   @query = Sanitize.clean(@query)
-    
+  
   if @query
     @page_title = "Search: #{@query}"
     @search = Search.new(options)

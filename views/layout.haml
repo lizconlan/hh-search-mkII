@@ -12,7 +12,7 @@
       %div.search-help
         %a{:href => "#{PARENT_URL}/search"} Search Help
       %form{:action => "#{settings.search_redir}/", :id => "search", :method => "post", :rel => "search"}
-        %input{:size => "24", :title => "Access key: S", :accesskey => "s", :name => "query", :id => "search-query", :type => "search", :placeholder => "Search Hansard", :autosave => "hansard.millbanksystems.com", :results => "10", :value => params[:query]}
+        %input{:size => "24", :title => "Access key: S", :accesskey => "s", :name => "query", :id => "search-query", :type => "search", :placeholder => "Search Hansard", :autosave => "hansard.millbanksystems.com", :results => "10", :value => params[:query].gsub("%2B", "+")}
         %input{:type => "submit", :value => "Search"}
       %div#nav
         %a{:href => "#{PARENT_URL}/", :id => "home", :rel => "home"} HANSARD 1803&ndash;2005
