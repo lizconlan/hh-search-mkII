@@ -54,7 +54,7 @@ get "/" do
 end
 
 post "/" do
-  query = CGI::escape(Sanitize.clean(params[:query].gsub("+", "%252B")))
+  query = CGI::escape(Sanitize.clean(params[:query].gsub("+", "%2B")))
   qs = querystring_builder({:page => 1})
   qs = qs[settings.search_redir.length+1..qs.length]
   query = "#{query}?#{qs}" unless qs.blank? or !qs.include?("=")
