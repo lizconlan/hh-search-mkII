@@ -68,11 +68,11 @@ class SearchTest < MiniTest::Spec
       it "should set sort correctly from the passed options" do
         search = Search.new({:query => "foo", :sort => 'reverse_date'})
         search.sort.must_equal('reverse_date')
-        search.search_options.must_equal({:offset=>0, :limit=>10, :highlight=>{:fields=>["solr_text"], :prefix=>"<em>", :suffix=>"</em>", :require_field_match=>true, :fragsize=>200}, :facets=>{:fields=>[:person_id, :date, :sitting_type], :zeros=>false}, :order=>"date desc"})
+        search.search_options.must_equal({:offset=>0, :limit=>10, :highlight=>{:fields=>["solr_text"], :prefix=>"<em>", :suffix=>"</em>", :require_field_match=>true, :fragsize=>200}, :facets=>{:fields=>[:person_id, :date, :sitting_type], :zeros=>false}, :order=>"date_facet desc"})
         
         search = Search.new({:query => "foo", :sort => 'date'})
         search.sort.must_equal('date')
-        search.search_options.must_equal({:offset=>0, :limit=>10, :highlight=>{:fields=>["solr_text"], :prefix=>"<em>", :suffix=>"</em>", :require_field_match=>true, :fragsize=>200}, :facets=>{:fields=>[:person_id, :date, :sitting_type], :zeros=>false}, :order=>"date asc"})
+        search.search_options.must_equal({:offset=>0, :limit=>10, :highlight=>{:fields=>["solr_text"], :prefix=>"<em>", :suffix=>"</em>", :require_field_match=>true, :fragsize=>200}, :facets=>{:fields=>[:person_id, :date, :sitting_type], :zeros=>false}, :order=>"date_facet asc"})
       end
       
       it "should not break sort_options when given an invalid sort option" do

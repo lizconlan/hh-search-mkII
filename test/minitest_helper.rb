@@ -2,6 +2,7 @@ if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start do
     add_filter 'test'
+    add_filter 'plugins'
     add_group "Models", "models"
     add_group "Libraries", "lib"
     add_group "Helpers", "helpers"
