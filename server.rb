@@ -54,7 +54,7 @@ get "/" do
 end
 
 post "/" do
-  query = CGI::escape(Sanitize.clean(params[:query].gsub("+", "%2B")).strip)
+  query = CGI::escape(Sanitize.clean(params[:query].gsub("+", "%2B")).strip.squeeze(" "))
   qs = querystring_builder({:page => 1})
   qs = qs[settings.search_redir.length+1..qs.length]
   query = "#{query}?#{qs}" unless qs.blank? or !qs.include?("=")
@@ -63,7 +63,7 @@ end
 
 get "/:query" do
   @reference = HansardReference.lookup(CGI::unescape(params[:query]))
-  @query = Sanitize.clean(CGI::unescape(params[:query])).gsub("%2B","+").strip
+  @query = Sanitize.clean(CGI::unescape(params[:query])).gsub("%2B","+").strip.squeeze(" ")
   if @reference
     if @reference.match_type == "not stored"
       @page_title = 'Hansard not found'
