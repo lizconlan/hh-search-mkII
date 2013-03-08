@@ -63,7 +63,7 @@ end
 
 get "/:query" do
   @reference = HansardReference.lookup(CGI::unescape(params[:query]))
-  @query = Sanitize.clean(CGI::unescape(params[:query])).gsub("%2B","+")
+  @query = Sanitize.clean(CGI::unescape(params[:query])).gsub("%2B","+").strip
   if @reference
     if @reference.match_type == "not stored"
       @page_title = 'Hansard not found'
